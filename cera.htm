@@ -1,0 +1,289 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>CERA Mobile</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+		<style type="text/css">
+   			body
+	   		{
+    	  		background-color:#E6E6E6
+   			}
+   			#menus
+   			{
+   				text-align: center;
+   			}
+   	 	</style>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+		<script>
+			function get_config_data()
+			{
+				//alert("getconfigdata")
+				var config_data = {
+					isdefault: "1",
+					trackline_check: false,
+					hydro_check: false,
+					prec_check: false,
+					query: false,
+					trackquery: false,
+					maptype: "ROADMAP",
+					sw: [ 21,-97 ],
+					ne: [ 37,-74 ],
+					zoom: "",
+					anilayer: "",
+					django_base: "/cera_data",
+					data_url: "/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng",
+					cgi_base: "/cgi-cera",
+					timezone: "cdt",
+					asgs: "ng",
+					selectmenu: 0,
+					mapextent: "gulf",
+					mapextent_data: [
+						{ value: "gulf", text: "Gulf / Atlantic" },
+						{ value: "ng", text: "Northern Gulf" },
+						{ value: "al", text: "Alabama" },
+						{ value: "la", text: "Louisiana" },
+						{ value: "ms", text: "Mississippi" },
+						{ value: "orleans", text: "New Orleans" },
+						{ value: "custom", text: "- Custom -", default_entry: true }
+					],
+					maptools: 0,
+					googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ"
+				};
+				return config_data;
+			}
+		</script>
+       	<script>	
+			//var platform = navigator.userAgent;
+		   	//if(platform.indexOf("Android") == -1 && platform.indexOf("Mobile") == -1 && platform.indexOf("Windows Phone") == -1 && platform.indexOf("Blackberry") == -1)
+		  		//window.location = "http://cera.cct.lsu.edu/cgi-cera-ng/cera-ng.cgi";
+		  window.addEventListener('orientationchange', doOnOrientationChange);
+		  function doOnOrientationChange(){
+		    if((window.orientation==-90)||(window.orientation==90))//portrait
+		    {  
+		        $("#menus").css("width", "100%");
+		  		$("#map").css({width: '90%', height: window.screen.width * .8 + ""});
+		    }
+		    else//landscape
+		    {
+		    	$("#menus").css("width","20%");
+		  		$("#map").css({width: '70%', height: window.screen.height * .8 + ""});
+		  		//alert($("#map").css("width"));
+		    }
+		  }
+		  	
+		  	
+		  	var json; //json file
+			var map;
+			
+			var layerList = [];
+		   	var hurricaneList = [];
+			var JSONURL = getLatestJSONURL(); 
+			var numCacheHosts = 4;
+			var markerArray = [];
+			var wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?day=20120826&time=0000&com=490&griddomain=CPRA&tz=cdt&";
+		  	
+		  function refresh(){
+			var tempDeferred = 
+				$.getJSON(JSONURL, function(data) {
+			  		json = data;
+			  			
+		  			var layerHTML = [];
+					var count = 0;
+					layerList = [];
+					
+					$.each(json.layers, function(layer, value) {
+						if(value && (layer.indexOf('max')!=-1)) // if the layer option is true (available)
+						{
+							layerHTML.push('<option value=' + count + '>' + layer + '</option>');
+							layerList.push(layer);
+							count++;
+						}
+					});
+					$('#elev').html(layerHTML.join(''));
+					
+					var hurricaneHTML = [];
+					hurricaneList = [];
+					//year -> data -> text,value,year
+					$.each(json.years, function()
+					{
+						$.each(this.data, function()
+						{
+							hurricaneList.push(this);
+							hurricaneHTML.push('<option>' + this.text + '</option>');
+						})
+					})
+					
+					$('#hurricane').html(hurricaneHTML.join(''));		
+					numCacheHosts = json.nr_cache_hosts;
+					
+			  		});
+		  	  return tempDeferred;
+		  	}
+		  	
+		  	function getLatestJSONURL(index){
+		  		if(hurricaneList.length != 0 && hurricaneList[index] != null)
+		  			return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=" + hurricaneList[index].year + "/stormnr=" + hurricaneList[index].value + "/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json";
+		  		else
+		  			return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json"; //defaults to latest
+		  	}
+			
+			function jumpLayer(selector) {
+				if(selector.options[selector.selectedIndex].value != "null") {
+					getMap(selector.selectedIndex);
+				}
+			}
+			
+			function jumpHurricane(selector) {
+				if(selector.options[selector.selectedIndex].value != "null") {
+					JSONURL = getLatestJSONURL(selector.selectedIndex);
+					$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
+					getMap($('#elev').val());
+				}
+			}
+			
+						
+			function returnImagelist(map, layerIndex)
+			{
+				//alert("returnimglist")
+				wms_url = wmsGenerator();
+				//alert("wms_url : " +  wms_url);
+				var layernames = '', styles = '';
+				//ImageMapType(url,tileSize,isPng)
+				var overlay = new google.maps.ImageMapType(
+				{
+					getTileUrl: function(tile, zoom) {
+						// tile.x,y delivers the Google tile number 
+						// *256 = pixel coordinates related to 0,0 (UL) of Google Maps
+						// map.getProjection() (Point) returns projected Mercator x,y coordinates -> convert pixel coord to projected coord
+						// PixelCoordinate = ProjectedCoordinate(x,y) * 2 exp(zoomLevel) [== Math.pow(2, zoom)]
+						// convert projected ccord to LatLng coordinates for MapServer request
+						var proj = map.getProjection();
+						var zfactor = Math.pow(2, zoom);
+						var ul = proj.fromPointToLatLng(new google.maps.Point(tile.x * 256 / zfactor, tile.y * 256 / zfactor) ); 
+						var lr = proj.fromPointToLatLng(new google.maps.Point((tile.x + 1) * 256 / zfactor, (tile.y + 1) * 256 / zfactor)); 
+						
+						var url_data = {
+							"REQUEST": "GetMap",
+							"SERVICE": "WMS",
+							"VERSION": "1.1.1",
+							"LAYERS": layerList[layerIndex],
+							"STYLES": "default",
+							"FORMAT": "image/png",
+							"BGCOLOR": "0xFFFFFF",
+							"SRS": "EPSG:4326",
+							"WIDTH": 256,
+							"HEIGHT": 256,
+							"BBOX" : ul.lng() + "," + lr.lat() + "," + lr.lng() + "," + ul.lat(),
+							"TRANSPARENT": "TRUE",
+							"reaspect": "false"
+						};
+						//rufei's shitty code
+						if(layerList[layerIndex] == null)
+							url_data.LAYERS = "maxelevhist";
+							
+						url_data.LAYERS += ",griddomain";
+							
+						var url = "http://tc" + ((tile.x % numCacheHosts)+1) + '.' + wms_url + "&" + $.param(url_data);
+						return url;
+					},
+					tileSize: new google.maps.Size(256, 256),
+					isPng: true	
+				});
+				//alert("reimglist")
+				return overlay;
+			}
+			
+			function wmsGenerator()//async solution
+			{
+				var cfg = get_config_data(); 
+				var time = selectIndex(json.times); 
+				var com = selectIndex(json.comments_day);
+				var storm_year = selectIndex(json.years);
+				var day = selectIndex(json.dates); 
+				var wms_spec_data = { 
+					"day": day, 
+					"time": time, 
+					"com": com,
+					"griddomain": json.grid.name, 
+					"tz": cfg.timezone
+				};
+				var wms_spec = $.param(wms_spec_data);
+				wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
+				return wms_url;
+			}
+
+			function selectIndex(array)
+			{
+				//alert("inselectindex")
+				for(var i = 0; i < array.length; i++)
+					if(array[i].selected != null)
+						return array[i].value;
+				return -1; // really oughtn't happen
+			} 	
+			
+			function initMap()
+			{
+				var lat = 30.411761;
+				var lon = -91.181841;
+				
+				navigator.geolocation.getCurrentPosition(function(position){
+					lat = position.coords.latitude;
+					lon = position.coords.longitude;
+					alert(lat + ", " + lon);
+				}, function(error){
+					alert(error.code + " " + error.message + " " + "aw, crap.");}
+				);
+				
+				var point = new google.maps.LatLng(lat, lon);
+		 		var mapOptions = {zoom: 5, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP};
+		  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
+		  		var marker = new google.maps.Marker
+			  			({position: point,map: map,title: "You"});
+			  			
+				getMap(0);
+			}
+			
+			function getMap(layerIndex)
+			{
+				var deferred = refresh();
+				
+				for (var i = 0; i < map.overlayMapTypes.length; i++)
+    				map.overlayMapTypes.setAt(i, null); // clear map
+				
+		  		deferred.done(function(){
+					map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+    			});
+			}
+				
+			// OK, is there any more elegant way to do this other than replacing the html of the element WHOLESALE? Seems like it would block execution
+			
+	</script>
+    </head>
+    <body onload="initMap()">
+    	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
+  			<h1 id="title" style="text-align: center;">Google Maps Test</h1>
+  			<h4 id="source" style="text-align: center;">&nbsp;</h4>
+  			<div id="menus" style="float: left; width: 250px">
+  				<h2>Hurricane</h2>
+			  	<select class="selector" id="hurricane" onchange="jumpHurricane(this)" style="width: 200px;">
+			  		<!--Hurricanes are injected here by the javascript-->
+			  	</select>
+		  		<h2>Layer</h2>
+		  		<select class="selector" id="elev" onchange="jumpLayer(this)" style="width: 200px;">
+			  		<!--Layers are injected here by the javascript-->
+			  	</select>
+			 </div>
+	 	</div>			 
+  			
+        <h1>&nbsp;</h1>
+        <div id="map" style="float: right; height: 200px; width: 200px; position: relative">&nbsp;</div> 
+        <script>
+        	doOnOrientationChange();
+        	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');	
+        </script>
+       </body>    
+</html>
