@@ -226,25 +226,29 @@
 			} 	
 			
 			function initMap()
-			{
-				var lat = 30.411761;
-				var lon = -91.181841;
-				
-				navigator.geolocation.getCurrentPosition(function(position){
-					lat = position.coords.latitude;
-					lon = position.coords.longitude;
-					alert(lat + ", " + lon);
-				}, function(error){
-					alert(error.code + " " + error.message + " " + "aw, crap.");}
+			{				
+				navigator.geolocation.getCurrentPosition(
+					function(position){ // on success
+						makeMap(position.coords.latitude, position.coords.longitude);
+						//console.log(position.coords.latitude + ", " + position.coords.longitude);
+					}, 
+					function(error){	// on error
+						makeMap(30.411761, -91.181841);
+						//console.log("code: " + error.code + " message: " + error.message);
+					}/*, 
+					{maximumAge:0, timeout:1000, enableHighAccuracy: true}*/ // for pinpointing
 				);
 				
-				var point = new google.maps.LatLng(lat, lon);
-		 		var mapOptions = {zoom: 5, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP};
-		  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
-		  		var marker = new google.maps.Marker
-			  			({position: point,map: map,title: "You"});
-			  			
-				getMap(0);
+				function makeMap(lat, lon) {
+					var point = new google.maps.LatLng(lat, lon);
+			 		var mapOptions = {zoom: 5, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP};
+			  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
+			  		var marker = new google.maps.Marker
+				  			({position: point,map: map,title: "You"});
+				  			
+					getMap(0);
+				}
+				
 			}
 			
 			function getMap(layerIndex)
