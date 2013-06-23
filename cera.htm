@@ -133,7 +133,7 @@
 			
 			function jumpLayer(selector) {
 				if(selector.options[selector.selectedIndex].value != "null") {
-					getMap(selector.selectedIndex);
+					getMap(selector.selectedIndex, null);
 				}
 			}
 			
@@ -141,7 +141,7 @@
 				if(selector.options[selector.selectedIndex].value != "null") {
 					JSONURL = getLatestJSONURL(selector.selectedIndex);
 					$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
-					getMap($('#elev').val());
+					getMap($('#elev').val(), refresh());
 				}
 			}
 			
@@ -227,6 +227,8 @@
 			
 			function initMap()
 			{				
+				var firstRefresh = refresh(); // preload JSON so we can use any delay in geolocation
+				
 				navigator.geolocation.getCurrentPosition(
 					function(position){ // on success
 						makeMap(position.coords.latitude, position.coords.longitude);
@@ -246,21 +248,25 @@
 			  		var marker = new google.maps.Marker
 				  			({position: point,map: map,title: "You"});
 				  			
-					getMap(0);
+					getMap(0, firstRefresh);
 				}
-				
 			}
 			
-			function getMap(layerIndex)
+			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 			{
-				var deferred = refresh();
+				//if (deferred == null)
+					//deferred = refresh();
 				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
     				map.overlayMapTypes.setAt(i, null); // clear map
 				
-		  		deferred.done(function(){
-					map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
-    			});
+		  		if(deferred == null)
+		  			map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+		  		else
+		  			deferred.done(function(){
+						map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+    				});
+    				
 			}
 				
 			// OK, is there any more elegant way to do this other than replacing the html of the element WHOLESALE? Seems like it would block execution
