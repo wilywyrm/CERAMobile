@@ -96,7 +96,7 @@
 					layerList = [];
 					
 					$.each(json.layers, function(layer, value) {
-						if(value && (layer.indexOf('max')!=-1)) // if the layer option is true (available)
+						if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
 						{
 							layerHTML.push('<option value=' + count + '>' + layer + '</option>');
 							layerList.push(layer);
@@ -254,19 +254,16 @@
 			
 			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 			{
-				//if (deferred == null)
-					//deferred = refresh();
 				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
     				map.overlayMapTypes.setAt(i, null); // clear map
 				
-		  		if(deferred == null)
-		  			map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
-		  		else
+		  		if(deferred != null)
 		  			deferred.done(function(){
 						map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
     				});
-    				
+    			else
+    			map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
 				
 			// OK, is there any more elegant way to do this other than replacing the html of the element WHOLESALE? Seems like it would block execution
