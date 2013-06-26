@@ -4,7 +4,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>CERA Mobile</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-		<script type="text/javascript" scr="http://vislab-ccom.unh.edu/~briana/examples/gdropdown/gdropdown.js"></script>
  		<style type="text/css">
    			body
 	   		{
@@ -151,7 +150,7 @@
 				//alert("returnimglist")
 				wms_url = wmsGenerator();
 				//alert("wms_url : " +  wms_url);
-				//var layernames = '', styles = '';
+				var layernames = '', styles = '';
 				//ImageMapType(url,tileSize,isPng)
 				var overlay = new google.maps.ImageMapType(
 				{
@@ -247,17 +246,21 @@
 			  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
 			  		var marker = new google.maps.Marker
 				  			({position: point,map: map,title: "You"});
-					getMap(0, firstRefresh);
+					//getMap(0, firstRefresh);
+
 					//from here on is the custome control
 					var homeControlDiv = document.createElement('div')
 					var homeControl = new control(homeControlDiv, map);
 					//homeControl.index = 1;
 					map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+					getMap(0, firstRefresh);
+
 				}
 			}
 			
 			function control(controlDiv, map)
 			{
+				
 					var controlUI=document.createElement("div");
 					var controlText=document.createElement("div");
 					
@@ -278,7 +281,7 @@
 					controlUI.appendChild(controlText);
 					google.maps.event.addDomListener(controlUI, 'click', function(){
 						map.setCenter(new google.maps.LatLng(36.0800,115.1522));})
-					
+					/*
 					var divOptions = {
 									gmap: map,
 									name: 'Option1',
@@ -308,7 +311,7 @@
 									dropDown: dropDownDiv
 									}
 					var dropDown1 = newdropDownControl(dropDownOptions);
-					
+					*/
 					
 			}
 			
@@ -323,11 +326,7 @@
 						map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
     				});
     			else
-<<<<<<< HEAD
-    				map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
-=======
     			map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
->>>>>>> origin/master
 			}
 			
 			
