@@ -4,7 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>CERA Mobile</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-		<style type="text/css">
+		<script type="text/javascript" scr="http://vislab-ccom.unh.edu/~briana/examples/gdropdown/gdropdown.js"></script>
+ 		<style type="text/css">
    			body
 	   		{
     	  		background-color:#E6E6E6
@@ -78,7 +79,6 @@
 		  	
 		  	var json; //json file
 			var map;
-			
 			var layerList = [];
 		   	var hurricaneList = [];
 			var JSONURL = getLatestJSONURL(); 
@@ -146,7 +146,7 @@
 			}
 			
 						
-			function returnImagelist(map, layerIndex)
+			function returnImageList(map, layerIndex)
 			{
 				//alert("returnimglist")
 				wms_url = wmsGenerator();
@@ -247,9 +247,69 @@
 			  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
 			  		var marker = new google.maps.Marker
 				  			({position: point,map: map,title: "You"});
-				  			
 					getMap(0, firstRefresh);
+					//from here on is the custome control
+					var homeControlDiv = document.createElement('div')
+					var homeControl = new control(homeControlDiv, map);
+					//homeControl.index = 1;
+					map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
 				}
+			}
+			
+			function control(controlDiv, map)
+			{
+					var controlUI=document.createElement("div");
+					var controlText=document.createElement("div");
+					
+					controlDiv.style='10px';
+					controlUI.style.backgroundColor = 'white';
+				  	controlUI.style.borderStyle = 'solid';
+				 	controlUI.style.borderWidth = '1px';
+				  	controlUI.style.cursor = 'pointer';
+				  	controlUI.style.textAlign = 'center';
+				  	controlUI.title = 'Click to set the map to Home';
+				  	controlDiv.appendChild(controlUI);
+				  	
+					controlText.style.fontFamily = 'Arial,sans-serif';
+					controlText.style.fontSize = '15px';
+					controlText.style.paddingLeft = '4px';
+					controlText.style.paddingRight = '4px';
+					controlText.innerHTML = '<strong>Home</strong>';
+					controlUI.appendChild(controlText);
+					google.maps.event.addDomListener(controlUI, 'click', function(){
+						map.setCenter(new google.maps.LatLng(36.0800,115.1522));})
+					
+					var divOptions = {
+									gmap: map,
+									name: 'Option1',
+									id: "mapOpt1",
+									action: function(){
+										alert("option 1");
+									}}
+					var optionDiv1 = new optionDiv(divOptions);		
+					var divOptions2 = {
+									gmap: map,
+									name: 'Option2',
+									id: "mapOpt2",
+									action: function(){
+										alert("option 2");
+									}}
+					var optionDiv2 = new optionDiv(divOptions2);
+					var ddDivOptions = {
+									item:[optionDiv1,Optiondiv2], 
+									id: "myddOptsDiv"
+									}
+					var dropDownDiv = new dorpDownOptionsDiv(ddDivOptions);
+					var dropDownOptions = {
+									gmap: map, 
+									name: 'My Box',
+									id: 'ddControl',
+									position: google.maps.ControlPosition.TOP_RIGHT,
+									dropDown: dropDownDiv
+									}
+					var dropDown1 = newdropDownControl(dropDownOptions);
+					
+					
 			}
 			
 			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
@@ -260,13 +320,13 @@
 				
 		  		if(deferred != null)
 		  			deferred.done(function(){
-						map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+						map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
     				});
     			else
-    			map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+    			map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
-				
-			// OK, is there any more elegant way to do this other than replacing the html of the element WHOLESALE? Seems like it would block execution
+			
+			
 			
 	</script>
     </head>
