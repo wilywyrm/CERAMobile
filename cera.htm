@@ -151,7 +151,7 @@
 				//alert("returnimglist")
 				wms_url = wmsGenerator();
 				//alert("wms_url : " +  wms_url);
-				var layernames = '', styles = '';
+				//var layernames = '', styles = '';
 				//ImageMapType(url,tileSize,isPng)
 				var overlay = new google.maps.ImageMapType(
 				{
@@ -263,7 +263,7 @@
 						map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
     				});
     			else
-    			map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+    				map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
 				
 			// OK, is there any more elegant way to do this other than replacing the html of the element WHOLESALE? Seems like it would block execution
