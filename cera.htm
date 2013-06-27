@@ -275,15 +275,29 @@
 			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 			{
 				
+				var layerName = $('#layers').find("div:eq(" + layerIndex + ")").text(); //the name of our last selected layer
+				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
     				map.overlayMapTypes.setAt(i, null); // clear map
 				
 		  		if(deferred != null)
 		  			deferred.done(function(){
-						map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
+		  				if(layerList[layerIndex] != layerName)
+		  				{
+		  					var newIndex = 0; //default to using first layer in layerList
+		  					if(layerList.indexOf(layerName) != -1)
+		  						newIndex = layerList.indexOf(layerName);
+		  					$('#layers div').removeClass("button-selected"); // clear old selected layer, if any
+							$('#layers').find("div:eq(" + newIndex + ")").addClass("button-selected"); // select new layer
+							map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
+		  				}
+						else
+						{
+							map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
+						}
     				});
     			else
-    				map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
+    				map.overlayMapTypes.push(returnImageList(map, layerIndex));
 			}
 	</script>
     </head>
