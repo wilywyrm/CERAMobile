@@ -141,21 +141,23 @@
 			function jumpLayer(layerIndex) {				
 				$('#layers div').removeClass("button-selected");
 				$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
-				
+				$('#layer-button').html(layerList[layerIndex]);
 				getMap(layerIndex, null);
 			}
-			
+	
 			function jumpHurricane(hurricaneIndex) {
+				//console.log(hurricaneList[hurricaneIndex].text);
+				$('#hurricane-button').html(hurricaneList[hurricaneIndex].text);
 				JSONURL = getLatestJSONURL(hurricaneIndex);
 				$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
-				
 				$('#hurricanes div').removeClass("button-selected");
 				$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");
-					
-				getMap($('#layers div.button-selected').index(), refresh());
+				$('#layer-button').html('Layers');
+				//$('#hurricanes').removeClass("dropdown-selected");
+				//$('#hurricanes').addClass("dropdown-not-selected");}
+;				getMap($('#layers div.button-selected').index(), refresh());
 			}
-			
-						
+	
 			function returnImageList(map, layerIndex)
 			{
 				//alert("returnimglist")
@@ -225,7 +227,7 @@
 				wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
 				return wms_url;
 			}
-
+	
 			function selectIndex(array)
 			{
 				//alert("inselectindex")
@@ -236,9 +238,7 @@
 			} 	
 			
 			function initMap()
-			{				
-				var firstRefresh = refresh(); // preload JSON so we can use any delay in geolocation
-				
+			{	var firstRefresh = refresh(); // preload JSON so we can use any delay in geolocation			
 				navigator.geolocation.getCurrentPosition(
 					function(position){ // on success
 						makeMap(position.coords.latitude, position.coords.longitude);
@@ -262,13 +262,16 @@
 					//from here on is the customecontrol
 					var layerDropdown = document.getElementById('layers-container');
 					$('#layers div:eq(0)').addClass("button-selected");
-        			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
-        			
-        			var hurricaneDropdown = document.getElementById('hurricanes-container');
-        			$('#hurricanes div:eq(0)').addClass("button-selected");
-        			map.controls[google.maps.ControlPosition.TOP_LEFT].push(hurricaneDropdown);
-        			
-        			//$('#dropdown').find('div:eq(2)').text("whoohoo");
+	    			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
+	    			
+	    			var hurricaneDropdown = document.getElementById('hurricanes-container');
+	    			$('#hurricanes div:eq(0)').addClass("button-selected");
+	    			map.controls[google.maps.ControlPosition.TOP_LEFT].push(hurricaneDropdown);
+	    			
+	    			//google.maps.event.addDomListener($('#layer-button'),'click', changeVisibility("layer"));		
+					//google.maps.event.addDomListener($('#hurricane-button'),'click', changeVisibility("hurricane"));			
+	    			
+	    			//$('#dropdown').find('div:eq(2)').text("whoohoo");
 				}
 			}
 			
@@ -276,35 +279,53 @@
 			{
 				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
-    				map.overlayMapTypes.setAt(i, null); // clear map
+					map.overlayMapTypes.setAt(i, null); // clear map
 				
 		  		if(deferred != null)
 		  			deferred.done(function(){
 						map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
-    				});
-    			else
-    				map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
+					});
+				else
+					map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
+			
+		function changeVisibilityLayer()
+		{
+			if(document.getElementById('layers').className=="dropdown-selected"){
+				$('#layers').removeClass("dropdown-selected");
+				$('#layers').addClass("dropdown-not-selected");}
+			else{
+				$('#layers').removeClass("dropdown-not-selected");
+				$('#layers').addClass("dropdown-selected");}
+		}
+		function changeVisibilityHurricane()
+		{	
+			if(document.getElementById('hurricanes').className=="dropdown-selected"){
+				$('#hurricanes').removeClass("dropdown-selected");
+				$('#hurricanes').addClass("dropdown-not-selected");}
+			else{
+				$('#hurricanes').removeClass("dropdown-not-selected");
+				$('#hurricanes').addClass("dropdown-selected");}
+		}
+		
 	</script>
     </head>
     <body onload="initMap()">
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
-  			<h5 id="source" style="text-align: center;">&nbsp;</h5>		
-  			 
+  			<h5 id="source" style="text-align: center;">&nbsp;</h5>
   			<div class="dropdown-container" id="layers-container">
-		      <div class="button-selected">Layers</div>
-		      <div class="dropdown" id="layers">
+		      <div class="button-selected" id='layer-button' onclick='changeVisibilityLayer()'>Layers</div>
+		      <div class="dropdown-selected" id="layers">
 		        &nbsp;
 		      </div>
 		    </div>
 			<div class="dropdown-container" id="hurricanes-container">
-		      <div class="button-selected">Hurricanes</div>
-		      <div class="dropdown" id="hurricanes">
+		      <div class="button-selected" id='hurricane-button' onclick="changeVisibilityHurricane()">Hurricanes</div>
+		      <div class="dropdown-selected" id="hurricanes">
 		        &nbsp;
 		      </div>
 		    </div>
-	        <div id="map" style="height: 200px; width: 200px; margin-left: auto; margin-right: auto; position: relative">&nbsp;</div> 
-	         
+	        <div id="map" style="height: 100%px; width: 100%px; margin-left: auto; margin-right: auto; position: relative">&nbsp;</div> 
 		    <h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>
 		    <a href="http://cera.cct.lsu.edu" style="text-align: center; text-decoration: none;"><h3>Looking for the desktop site?</h3></a>
 	    </div>	
