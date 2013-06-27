@@ -31,11 +31,11 @@
         font-weight: bold;
       }
 
-      #dropdown-holder {
+      .dropdown-container {
         margin: 5px;
       }
 
-      #dropdown-holder .button, #dropdown-holder .button-selected {
+      .dropdown-container .button, .dropdown-container .button-selected {
         margin: 0;
       }
 

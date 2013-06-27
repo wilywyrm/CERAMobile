@@ -77,7 +77,6 @@
 		    }
 		  }
 		  	
-		  	
 		  	var json; //json file
 			var map;
 			var layerList = [];
@@ -87,7 +86,8 @@
 			var markerArray = [];
 			var wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?day=20120826&time=0000&com=490&griddomain=CPRA&tz=cdt&";
 		  	
-		  function refresh(){
+		  function refresh()
+		  {
 			var tempDeferred = 
 				$.getJSON(JSONURL, function(data) {
 			  		json = data;
@@ -99,7 +99,7 @@
 					$.each(json.layers, function(layer, value) {
 						if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
 						{
-							layerHTML.push('<option value=' + count + '>' + layer + '</option>');
+							layerHTML.push('<div class=\'dropdown-item\' onclick="jumpLayer(' + count + ')">' + layer + '</div>');
 							layerList.push(layer);
 							count++;
 						}
@@ -132,10 +132,8 @@
 		  			return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json"; //defaults to latest
 		  	}
 			
-			function jumpLayer(selector) {
-				if(selector.options[selector.selectedIndex].value != "null") {
-					getMap(selector.selectedIndex, null);
-				}
+			function jumpLayer(layerIndex) {
+					getMap(layerIndex, null);
 			}
 			
 			function jumpHurricane(selector) {
@@ -251,8 +249,10 @@
 					getMap(0, firstRefresh);
 					//from here on is the customecontrol
 
-					var dropdown = document.getElementById('dropdown-holder');
+					var dropdown = document.getElementById('elev-container');
         			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(dropdown);
+        			
+        			//$('#dropdown').find('div:eq(2)').text("whoohoo");
 				}
 			}
 			
@@ -267,7 +267,7 @@
 						map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
     				});
     			else
-    				map.overlayMapTypes.push(returnImagelist(map, layerIndex)/*call a function that returns list of image in an array*/);
+    				map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
 	</script>
     </head>
@@ -281,23 +281,19 @@
 			  		<!--Hurricanes are injected here by the javascript-->
 			  	</select>
 		  		<h2>Layer</h2>
-		  		<select class="selector" id="elev" onchange="jumpLayer(this)" style="width: 200px;">
+		  		<!--<select class="selector" id="elev" onchange="jumpLayer(this)" style="width: 200px;">-->
 			  		<!--Layers are injected here by the javascript-->
-			  	</select>
+			  	<!--</select> -->
 			 </div>
 	 	</div>			 
   			
         <h1>&nbsp;</h1>
         <div id="map" style="float: right; height: 200px; width: 200px; position: relative">&nbsp;</div> 
-         <div id="dropdown-holder">
-	      <div class="button-selected">Dropdown</div>
-	      <div class="dropdown">
-	        <div class="dropdown-item">Item 1</div>
-	        <div class="dropdown-item">Item 2</div>
-	        <div class="dropdown-item">Item 3</div>
-	        <div class="dropdown-item">Item 4</div>
-	        <div class="dropdown-item">Item 5</div>
-	      </div>
+         <div class="dropdown-container" id="elev-container">
+	      <div class="button-selected">Layers</div>
+		      <div class="dropdown" id="elev">
+		        &nbsp;
+		      </div>
 	    </div>
 
         <script>
