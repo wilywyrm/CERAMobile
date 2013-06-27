@@ -29,14 +29,25 @@
     margin: 0;
   }
 
-  .dropdown {
+  .dropdown-selected {
     background: white;
     border: 1px solid #717B87;
     border-top: 0;
     padding-top: 2px;
     z-index: -1;
     position: relative;
+    visibility: visible;
   }
+    .dropdown-not-selected {
+    background: white;
+    border: 1px solid #717B87;
+    border-top: 0;
+    padding-top: 2px;
+    z-index: -1;
+    position: relative;
+    visibility: hidden;
+  }
+
 
   .dropdown-item {
     padding: 1px 5px 3px 5px;
