@@ -4,15 +4,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>CERA Mobile</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-		<script type="text/javascript" src="http://vislab-ccom.unh.edu/~briana/examples/gdropdown/gdropdown.js"></script>
  		<style type="text/css">
    			body
 	   		{
     	  		background-color:#E6E6E6
-   			}
-   			#menus
-   			{
-   				text-align: center;
    			}
    	 	</style>
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
@@ -56,9 +51,7 @@
 					googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ"
 				};
 				return config_data;
-			}
-		</script>
-       	<script>	
+			}	
 			//var platform = navigator.userAgent;
 		   	//if(platform.indexOf("Android") == -1 && platform.indexOf("Mobile") == -1 && platform.indexOf("Windows Phone") == -1 && platform.indexOf("Blackberry") == -1)
 		  		//window.location = "http://cera.cct.lsu.edu/cgi-cera-ng/cera-ng.cgi";
@@ -66,13 +59,13 @@
 		  function doOnOrientationChange(){
 		    if((window.orientation==-90)||(window.orientation==90))//portrait
 		    {  
-		        $("#menus").css("width", "100%");
-		  		$("#map").css({width: '90%', height: window.screen.width * .8 + ""});
+		        //$("#menus").css("width", "100%");
+		  		$("#map").css({width: '90%', height: window.screen.width * .7 + ""});
 		    }
 		    else//landscape
 		    {
-		    	$("#menus").css("width","20%");
-		  		$("#map").css({width: '70%', height: window.screen.height * .8 + ""});
+		    	//$("#menus").css("width","20%");
+		  		$("#map").css({width: '70%', height: window.screen.height * .7 + ""});
 		  		//alert($("#map").css("width"));
 		    }
 		  }
@@ -88,6 +81,9 @@
 		  	
 		  function refresh()
 		  {
+		  	var layerIndex = $('#layers div.button-selected').index();
+		  	var hurricaneIndex = $('#hurricanes div.button-selected').index();
+		  	
 			var tempDeferred = 
 				$.getJSON(JSONURL, function(data) {
 			  		json = data;
@@ -104,21 +100,31 @@
 							count++;
 						}
 					});
-					$('#elev').html(layerHTML.join(''));
+					$('#layers').html(layerHTML.join(''));
 					
 					var hurricaneHTML = [];
 					hurricaneList = [];
 					//year -> data -> text,value,year
+					
+					count = 0;
 					$.each(json.years, function()
 					{
 						$.each(this.data, function()
 						{
 							hurricaneList.push(this);
-							hurricaneHTML.push('<option>' + this.text + '</option>');
+							hurricaneHTML.push('<div class=\'dropdown-item\' onclick="jumpHurricane(' + count + ')">' + this.text + '</div>');
+							count++;
 						})
 					})
 					
-					$('#hurricane').html(hurricaneHTML.join(''));		
+					$('#hurricanes').html(hurricaneHTML.join(''));		
+					
+					if(hurricaneIndex != -1)
+						$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");
+					
+					if(layerIndex != -1)
+						$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
+					
 					numCacheHosts = json.nr_cache_hosts;
 					
 			  		});
@@ -132,16 +138,21 @@
 		  			return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json"; //defaults to latest
 		  	}
 			
-			function jumpLayer(layerIndex) {
-					getMap(layerIndex, null);
+			function jumpLayer(layerIndex) {				
+				$('#layers div').removeClass("button-selected");
+				$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
+				
+				getMap(layerIndex, null);
 			}
 			
-			function jumpHurricane(selector) {
-				if(selector.options[selector.selectedIndex].value != "null") {
-					JSONURL = getLatestJSONURL(selector.selectedIndex);
-					$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
-					getMap($('#elev').val(), refresh());
-				}
+			function jumpHurricane(hurricaneIndex) {
+				JSONURL = getLatestJSONURL(hurricaneIndex);
+				$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
+				
+				$('#hurricanes div').removeClass("button-selected");
+				$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");
+					
+				getMap($('#layers div.button-selected').index(), refresh());
 			}
 			
 						
@@ -242,15 +253,20 @@
 				
 				function makeMap(lat, lon) {
 					var point = new google.maps.LatLng(lat, lon);
-			 		var mapOptions = {zoom: 5, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP};
+			 		var mapOptions = {zoom: 8, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP, disableDefaultUI: true};
 			  		map = new google.maps.Map(document.getElementById('map'),mapOptions);
 			  		var marker = new google.maps.Marker
 				  			({position: point,map: map,title: "You"});
 					getMap(0, firstRefresh);
+					
 					//from here on is the customecontrol
-
-					var dropdown = document.getElementById('elev-container');
-        			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(dropdown);
+					var layerDropdown = document.getElementById('layers-container');
+					$('#layers div:eq(0)').addClass("button-selected");
+        			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
+        			
+        			var hurricaneDropdown = document.getElementById('hurricanes-container');
+        			$('#hurricanes div:eq(0)').addClass("button-selected");
+        			map.controls[google.maps.ControlPosition.TOP_LEFT].push(hurricaneDropdown);
         			
         			//$('#dropdown').find('div:eq(2)').text("whoohoo");
 				}
@@ -273,29 +289,25 @@
     </head>
     <body onload="initMap()">
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
-  			<h1 id="title" style="text-align: center;">Google Maps Test</h1>
-  			<h4 id="source" style="text-align: center;">&nbsp;</h4>
-  			<div id="menus" style="float: left; width: 250px">
-  				<h2>Hurricane</h2>
-			  	<select class="selector" id="hurricane" onchange="jumpHurricane(this)" style="width: 200px;">
-			  		<!--Hurricanes are injected here by the javascript-->
-			  	</select>
-		  		<h2>Layer</h2>
-		  		<!--<select class="selector" id="elev" onchange="jumpLayer(this)" style="width: 200px;">-->
-			  		<!--Layers are injected here by the javascript-->
-			  	<!--</select> -->
-			 </div>
-	 	</div>			 
-  			
-        <h1>&nbsp;</h1>
-        <div id="map" style="float: right; height: 200px; width: 200px; position: relative">&nbsp;</div> 
-         <div class="dropdown-container" id="elev-container">
-	      <div class="button-selected">Layers</div>
-		      <div class="dropdown" id="elev">
+  			<h5 id="source" style="text-align: center;">&nbsp;</h5>		
+  			 
+  			<div class="dropdown-container" id="layers-container">
+		      <div class="button-selected">Layers</div>
+		      <div class="dropdown" id="layers">
 		        &nbsp;
 		      </div>
-	    </div>
-
+		    </div>
+			<div class="dropdown-container" id="hurricanes-container">
+		      <div class="button-selected">Hurricanes</div>
+		      <div class="dropdown" id="hurricanes">
+		        &nbsp;
+		      </div>
+		    </div>
+	        <div id="map" style="height: 200px; width: 200px; margin-left: auto; margin-right: auto; position: relative">&nbsp;</div> 
+	         
+		    <h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>
+		    <a href="http://cera.cct.lsu.edu" style="text-align: center; text-decoration: none;"><h3>Looking for the desktop site?</h3></a>
+	    </div>	
         <script>
         	doOnOrientationChange();
         	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');	

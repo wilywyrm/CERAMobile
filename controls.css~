@@ -1,4 +1,4 @@
-.button, .button-selected, .dropdown {
+.button-selected, .dropdown {
         cursor: pointer;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -14,17 +14,10 @@
         background-color: #fff;
       }
 
-      .button, .button-selected {
+      .button-selected {
             margin: 5px;
             padding: 1px 6px;
             overflow: hidden;
-      }
-
-      .button:hover {
-                background: #FEFEFE;
-        background: -moz-linear-gradient(top, #FEFEFE 0%, #F3F3F3 100%);
-        background: -webkit-gradient(linear, left top, left bottom, from(#FEFEFE), to(#F3F3F3));
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FEFEFE', endColorstr='#F3F3F3', GradientType=0);
       }
 
       .button-selected {
@@ -35,7 +28,7 @@
         margin: 5px;
       }
 
-      .dropdown-container .button, .dropdown-container .button-selected {
+      .dropdown-container .button-selected {
         margin: 0;
       }
 
@@ -54,4 +47,6 @@
       }
 
       .dropdown-item:hover {
-        background: #000000;
+        background: #ebebeb;
+			}
+
