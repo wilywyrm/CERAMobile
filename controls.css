@@ -5,7 +5,7 @@
     text-align: center;
     position: relative;
     font-family: Arial, sans-serif;
-    font-size: 13px;
+    font-size: 17px;
     box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
     -moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
@@ -37,15 +37,6 @@
     z-index: -1;
     position: relative;
     visibility: visible;
-  }
-    .dropdown-not-selected {
-    background: white;
-    border: 1px solid #717B87;
-    border-top: 0;
-    padding-top: 2px;
-    z-index: -1;
-    position: relative;
-    visibility: hidden;
   }
 
 
