@@ -293,13 +293,34 @@
     			else // we're probably in a layer change refresh, no refresh of JSON needed
     				map.overlayMapTypes.push(returnImageList(map, layerIndex));
 			}
+			
+		function toggleLayerButton(){
+			$('#layers div').toggle(100, function(){
+				$('#layer-button span').hide();
+				if($('#layers div').is(':visible'))
+					$('#layer-button span:last').show();
+				else
+					$('#layerName').show();
+			});
+			$('layerName').text(layerList[$('#layers div.button-selected').index()]);
+		}
+		
+		function toggleHurricaneButton(){
+			$('#hurricanes div').toggle(100, function(){
+				$('#hurricane-button span').hide();
+			if($('#hurricanes div').is(':visible'))
+				$('#hurricane-button span:last').show();
+			else
+				$('#hurricaneName').show();
+			});
+		}
 	</script>
     </head>
     <body onload="initMap()">
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
   			<h5 id="source" style="text-align: center;">&nbsp;</h5>
   			<div class="dropdown-container" id="layers-container">
-		      <div class="button-selected" id='layer-button' onclick="$('#layers div').toggle('fast');$('span', this).toggle();">
+		      <div class="button-selected" id='layer-button' onclick="toggleLayerButton()">
 		      	<span id="layerName" style="display: none">&nbsp;</span>
 		      	<span>Layers</span>
 		      </div>
@@ -308,7 +329,7 @@
 		      </div>
 		    </div>
 			<div class="dropdown-container" id="hurricanes-container">
-		      <div class="button-selected" id='hurricane-button' onclick="$('#hurricanes div').toggle('fast');$('span', this).toggle();">
+		      <div class="button-selected" id='hurricane-button' onclick="toggleHurricaneButton()">
 				<span id="hurricaneName" style="display: none">&nbsp;</span>
 		      	<span>Hurricanes</span>
 			  </div>
