@@ -95,7 +95,6 @@
 			}
 	
 			function jumpHurricane(hurricaneIndex) {
-				//console.log(hurricaneList[hurricaneIndex].text);
 				$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
 				JSONURL = getLatestJSONURL(hurricaneIndex);
 				$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
@@ -266,7 +265,7 @@
 		  					layerIndex = 0;
 		  					$('#layers div:eq(0)').addClass("button-selected");
 		  					$('#hurricanes div:eq(0)').addClass("button-selected");
-		  					$('#hurricaneName').text(hurricaneList[0]);
+		  					$('#hurricaneName').text(hurricaneList[0].text);
 		  					$('#layerName').text(layerList[0]);
 		  				}	  				
 		  				
@@ -275,11 +274,13 @@
 		  					var newIndex = 0; //default to using first layer in layerList
 		  					if(layerList.indexOf(layerName) != -1) // if the layer we previously selected still exists in the array somewhere
 		  						newIndex = layerList.indexOf(layerName); // select the index of that layer, wherever it is
+		  					
 		  					$('#layers div').removeClass("button-selected"); // clear old selected layer, if any
 							$('#layers').find("div:eq(" + newIndex + ")").addClass("button-selected"); // select new layer
 							$('#layers div').toggle(true);
+							
 							$('#layerName').text(layerList[newIndex]);
-							$('#layer-button span:last').show();
+							$('#layer-button span').show();
 							$('#layerName').hide();
 							
 							map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
@@ -299,7 +300,7 @@
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
   			<h5 id="source" style="text-align: center;">&nbsp;</h5>
   			<div class="dropdown-container" id="layers-container">
-		      <div class="button-selected" id='layer-button' onclick="$('#layers div').toggle('slow');$('span', this).toggle();">
+		      <div class="button-selected" id='layer-button' onclick="$('#layers div').toggle('fast');$('span', this).toggle();">
 		      	<span id="layerName" style="display: none">&nbsp;</span>
 		      	<span>Layers</span>
 		      </div>
@@ -308,7 +309,7 @@
 		      </div>
 		    </div>
 			<div class="dropdown-container" id="hurricanes-container">
-		      <div class="button-selected" id='hurricane-button' onclick="$('#hurricanes div').toggle('slow');$('span', this).toggle();">
+		      <div class="button-selected" id='hurricane-button' onclick="$('#hurricanes div').toggle('fast');$('span', this).toggle();">
 				<span id="hurricaneName" style="display: none">&nbsp;</span>
 		      	<span>Hurricanes</span>
 			  </div>
