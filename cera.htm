@@ -64,11 +64,21 @@
 					{
 						$.each(this.data, function()
 						{
-							hurricaneList.push(this);
-							hurricaneHTML.push('<div class=\'dropdown-item\' onclick="jumpHurricane(' + count + ')">' + this.text + '</div>');
+							hurricaneList.unshift(this);
 							count++;
 						})
 					})
+					
+					$.each(json.years, function()
+					{
+						$.each(this.data, function()
+						{
+							count--;
+							hurricaneHTML.unshift('<div class=\'dropdown-item\' onclick="jumpHurricane(' + count + ')">' + this.text + '</div>');
+						})
+					})
+					
+					
 					$('#hurricanes').html(hurricaneHTML.join(''));		
 					
 					if(hurricaneIndex != -1)
@@ -317,6 +327,9 @@
 				$('#hurricaneName').show();
 			});
 		}
+		
+		//find first-load selected latest hurricane and label its name with .button-selected, 
+		
 	</script>
     </head>
     <body onload="initMap()">
