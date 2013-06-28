@@ -289,13 +289,15 @@
 							$('#layers').find("div:eq(" + layerIndex + ")").addClass("button-selected");
 							map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 						}
+						$('#hurricane-button span').hide();
+    					$('#hurricane-button span:last').show(); // display "Hurricane" on the menu
     				});
     			else // we're probably in a layer change refresh, no refresh of JSON needed
     				map.overlayMapTypes.push(returnImageList(map, layerIndex));
 			}
 			
 		function toggleLayerButton(){
-			$('#layers div').toggle(100, function(){
+			$('#layers div').slideToggle(100, function(){
 				$('#layer-button span').hide();
 				if($('#layers div').is(':visible'))
 					$('#layer-button span:last').show();
@@ -306,7 +308,7 @@
 		}
 		
 		function toggleHurricaneButton(){
-			$('#hurricanes div').toggle(100, function(){
+			$('#hurricanes div').slideToggle(100, function(){
 				$('#hurricane-button span').hide();
 			if($('#hurricanes div').is(':visible'))
 				$('#hurricane-button span:last').show();
