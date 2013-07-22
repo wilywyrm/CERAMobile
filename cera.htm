@@ -37,7 +37,6 @@
 		  {
 		  	var layerIndex = $('#layers div.button-selected').index();
 		  	var hurricaneIndex = $('#hurricanes div.button-selected').index();
-		  	
 			var tempDeferred = 
 				$.getJSON(JSONURL, function(data) {
 			  		json = data;
@@ -114,7 +113,6 @@
 			function returnImageList(map, layerIndex)
 			{
 				wms_url = wmsGenerator();
-
 				var overlay = new google.maps.ImageMapType(
 				{
 					getTileUrl: function(tile, zoom) {
@@ -127,7 +125,6 @@
 						var zfactor = Math.pow(2, zoom);
 						var ul = proj.fromPointToLatLng(new google.maps.Point(tile.x * 256 / zfactor, tile.y * 256 / zfactor) ); 
 						var lr = proj.fromPointToLatLng(new google.maps.Point((tile.x + 1) * 256 / zfactor, (tile.y + 1) * 256 / zfactor)); 
-						
 						var url_data = {
 							"REQUEST": "GetMap",
 							"SERVICE": "WMS",
@@ -163,7 +160,29 @@
 				return overlay;
 			}
 			
-			function wmsGenerator()//async solution
+			function wmsGenerator()
+			{
+				/*
+				var cfg = get_config_data(); 
+				var time = selectIndex(json.times); 
+				var com = selectIndex(json.comments_day);
+				var storm_year = selectIndex(json.years);
+				var day = selectIndex(json.dates); 
+				var wms_spec_data = { 
+					"day": day, 
+					"time": time, 
+					"com": com,
+					"griddomain": json.grid.name, 
+					"tz": cfg.timezone
+				};
+				*/
+				var wms_spec_data= wmsSpecDataGenerator();
+				var wms_spec = $.param(wms_spec_data);
+				wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
+				return wms_url;
+			}
+			
+			function wmsSpecDataGenerator()
 			{
 				var cfg = get_config_data(); 
 				var time = selectIndex(json.times); 
@@ -177,9 +196,7 @@
 					"griddomain": json.grid.name, 
 					"tz": cfg.timezone
 				};
-				var wms_spec = $.param(wms_spec_data);
-				wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
-				return wms_url;
+				return wms_spec_data;
 			}
 	
 			function selectIndex(array)
@@ -221,13 +238,16 @@
 						{ value: "custom", text: "- Custom -", default_entry: true }
 					],
 					maptools: 0,
-					googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ"
+					googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
+					data_host: json.data_host
 				};
+				//console.log("in getconfig");
 				return config_data;
 			}	
 			
 			function initMap()
-			{	var firstRefresh = refresh(); // preload JSON so we can use any delay in geolocation			
+			{	
+				var firstRefresh = refresh(); // preload JSON so we can use any delay in geolocation			
 				navigator.geolocation.getCurrentPosition(
 					function(position){ // on success
 						makeMap(position.coords.latitude, position.coords.longitude);
@@ -239,7 +259,7 @@
 					}/*, 
 					{maximumAge:0, timeout:1000, enableHighAccuracy: true}*/ // for pinpointing
 				);
-				
+				//console.log("initMap done");
 				function makeMap(lat, lon) {
 					var point = new google.maps.LatLng(lat, lon);
 			 		var mapOptions = {zoom: 8, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP, disableDefaultUI: true};
@@ -252,7 +272,7 @@
 	    			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
 	    			
 	    			var hurricaneDropdown = document.getElementById('hurricanes-container');
-	    			map.controls[google.maps.ControlPosition.TOP_LEFT].push(hurricaneDropdown);
+	    			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 	    			
 					getMap(null, firstRefresh);
 				}
@@ -260,13 +280,16 @@
 			
 			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 			{
+				
 				var layerName = $('#layers').find("div:eq(" + layerIndex + ")").text(); //the name of our last selected layer, is "" during first run
 				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
 					map.overlayMapTypes.setAt(i, null); // clear map
 
 		  		if(deferred != null) // if NOT a layer change refresh
-		  			deferred.done(function(){	
+		  			deferred.done(function(){
+		  				create_track_line();	
+		  				create_track_timesteps_points();
 		  				if(layerIndex == null) // if first run
 		  				{
 		  					layerIndex = 0;
@@ -326,8 +349,74 @@
 			});
 		}
 		
-		//find first-load selected latest hurricane and label its name with .button-selected, 
+		function create_track_timesteps_points()
+		{
+			var wmsSpec=wmsSpecDataGenerator();
+			wmsSpec = $.param(wmsSpec);
+			zoomLevel = map.zoom;
+			cfg = get_config_data();
+			//remeber to add in django.data_host to the front before uploading it to the server. hardcoding was purely for testing purposes.
+			$.get("http://cera.cct.lsu.edu/cera_data" + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
+			function(xmlDoc){
+				var points = xmlDoc.documentElement.getElementsByTagName("ms:track_ani");
+				var badxml = false;
+				if (0 == points.length) {
+					badxml = true;
+					points = xmlDoc.documentElement.getElementsByTagName("track_ani"); 
+				}
+				map.track_ani_points = [];
+				$.each(points, function() {
+				var gmlpoint = this.getElementsByTagName(badxml ? "Point" : "gml:Point");
+				var gmlcoords = gmlpoint[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
+				var gmltime = this.getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
+				
+				map.track_ani_points.push({ latlng: get_latlong(gmlcoords[0]), daytime: get_datetime(gmltime[0]) });
+				console.log(map.track_ani_points);
+			});
+			}
+			//console.log(wms_spec);
+			//console.log(cfg);
+			)
+		}
 		
+		
+		// track line
+		function create_track_line()
+		{
+			var wmsSpec=wmsSpecDataGenerator();
+			wmsSpec = $.param(wmsSpec);
+			newLevel = map.zoom;
+			var cfg = get_config_data();
+			$.get("http://cera.cct.lsu.edu/cera_data" + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_lines&debug=on&data_host=" + cfg.data_host,
+				function(xmlDoc) {   //function to process the state change events that happen on that request
+					var lines = xmlDoc.documentElement.getElementsByTagName("ms:track_lines"); 
+					var badxml = false;
+					if (0 == lines.length) {
+						badxml = true;
+						lines = xmlDoc.documentElement.getElementsByTagName("track_lines"); 
+					}
+					// obtain the attribues of each line segment
+					for (var i = 0; i < lines.length; i++) {				
+						//var cls = get_class(lines[i], badxml);
+						var gmllinestring = lines[i].getElementsByTagName(badxml ? "LineString" : "gml:LineString");
+						var gmlcoords = gmllinestring[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
+						var color = '#555';
+						//if (cls != "3") 
+							//color = '#500000';
+						var p = new google.maps.Polyline({
+							path: get_points_from_xml(gmlcoords[0]), 
+							strokeColor: color, 
+							strokeWeight: 2, 
+							strokeOpacity: 1, 
+							clickable: false,
+							geodesic: true,
+							map: map
+						});
+						p.setMap(map);
+					}
+				});
+		}
+		//find first-load selected latest hurricane and label its name with .button-selected, 
 	</script>
     </head>
     <body onload="initMap()">
