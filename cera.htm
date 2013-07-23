@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
 		<link rel="stylesheet" href="controls.css" />
 		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 		<script>
@@ -25,7 +26,7 @@
 		  		$("#map").css({width: '70%', height: window.screen.height * .7 + ""});
 		    }
 		  }
-		  	
+		  	var markerList = [];
 		  	var json; //json file
 			var map;
 			var layerList = [];
@@ -112,7 +113,7 @@
 	
 			function returnImageList(map, layerIndex)
 			{
-				wms_url = wmsGenerator();
+				wms_url = wmsUrlGenerator();
 				var overlay = new google.maps.ImageMapType(
 				{
 					getTileUrl: function(tile, zoom) {
@@ -160,22 +161,8 @@
 				return overlay;
 			}
 			
-			function wmsGenerator()
+			function wmsUrlGenerator()
 			{
-				/*
-				var cfg = get_config_data(); 
-				var time = selectIndex(json.times); 
-				var com = selectIndex(json.comments_day);
-				var storm_year = selectIndex(json.years);
-				var day = selectIndex(json.dates); 
-				var wms_spec_data = { 
-					"day": day, 
-					"time": time, 
-					"com": com,
-					"griddomain": json.grid.name, 
-					"tz": cfg.timezone
-				};
-				*/
 				var wms_spec_data= wmsSpecDataGenerator();
 				var wms_spec = $.param(wms_spec_data);
 				wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
@@ -280,15 +267,13 @@
 			
 			function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 			{
-				
-				var layerName = $('#layers').find("div:eq(" + layerIndex + ")").text(); //the name of our last selected layer, is "" during first run
-				
+				var layerName = $('#layers').find("div:eq(" + layerIndex + ")").text(); //the name of our last selected layer, is "" during first run				
 				for (var i = 0; i < map.overlayMapTypes.length; i++)
 					map.overlayMapTypes.setAt(i, null); // clear map
 
 		  		if(deferred != null) // if NOT a layer change refresh
 		  			deferred.done(function(){
-		  				create_track_line();	
+		  				//create_track_line();	
 		  				create_track_timesteps_points();
 		  				if(layerIndex == null) // if first run
 		  				{
@@ -336,7 +321,7 @@
 				else
 					$('#layerName').show();
 			});
-			$('layerName').text(layerList[$('#layers div.button-selected').index()]);
+			$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
 		}
 		
 		function toggleHurricaneButton(){
@@ -351,6 +336,7 @@
 		
 		function create_track_timesteps_points()
 		{
+			
 			var wmsSpec=wmsSpecDataGenerator();
 			wmsSpec = $.param(wmsSpec);
 			zoomLevel = map.zoom;
@@ -358,70 +344,122 @@
 			//remeber to add in django.data_host to the front before uploading it to the server. hardcoding was purely for testing purposes.
 			$.get("http://cera.cct.lsu.edu/cera_data" + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
 			function(xmlDoc){
-				var points = xmlDoc.documentElement.getElementsByTagName("ms:track_ani");
-				var badxml = false;
-				if (0 == points.length) {
-					badxml = true;
-					points = xmlDoc.documentElement.getElementsByTagName("track_ani"); 
+				if(markerList.length != 0)
+				{
+					$.each(markerList,function(){
+						this.setMap(null);
+					});
 				}
-				map.track_ani_points = [];
-				$.each(points, function() {
-				var gmlpoint = this.getElementsByTagName(badxml ? "Point" : "gml:Point");
-				var gmlcoords = gmlpoint[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
-				var gmltime = this.getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
-				
-				map.track_ani_points.push({ latlng: get_latlong(gmlcoords[0]), daytime: get_datetime(gmltime[0]) });
-				console.log(map.track_ani_points);
-			});
-			}
-			//console.log(wms_spec);
-			//console.log(cfg);
-			)
-		}
-		
-		
-		// track line
-		function create_track_line()
-		{
-			var wmsSpec=wmsSpecDataGenerator();
-			wmsSpec = $.param(wmsSpec);
-			newLevel = map.zoom;
-			var cfg = get_config_data();
-			$.get("http://cera.cct.lsu.edu/cera_data" + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_lines&debug=on&data_host=" + cfg.data_host,
-				function(xmlDoc) {   //function to process the state change events that happen on that request
-					var lines = xmlDoc.documentElement.getElementsByTagName("ms:track_lines"); 
-					var badxml = false;
-					if (0 == lines.length) {
-						badxml = true;
-						lines = xmlDoc.documentElement.getElementsByTagName("track_lines"); 
-					}
-					// obtain the attribues of each line segment
-					for (var i = 0; i < lines.length; i++) {				
-						//var cls = get_class(lines[i], badxml);
-						var gmllinestring = lines[i].getElementsByTagName(badxml ? "LineString" : "gml:LineString");
-						var gmlcoords = gmllinestring[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
-						var color = '#555';
-						//if (cls != "3") 
-							//color = '#500000';
-						var p = new google.maps.Polyline({
-							path: get_points_from_xml(gmlcoords[0]), 
-							strokeColor: color, 
-							strokeWeight: 2, 
-							strokeOpacity: 1, 
-							clickable: false,
-							geodesic: true,
-							map: map
-						});
-						p.setMap(map);
-					}
+				markerList = [];
+				var markers = xmlDoc.documentElement.getElementsByTagName("ms:track_timesteps"); 
+				var badxml = false;
+				if (markers.length == 0) {                                         		                
+					badxml = true;
+					markers = xmlDoc.documentElement.getElementsByTagName("track_timesteps"); 
+				}
+					
+				var count=0;//count for the list of markers
+				$.each(markers, function() {
+					var gmlpoint = this.getElementsByTagName(badxml ? "Point" : "gml:Point");
+					var gmlcoords = gmlpoint[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
+					var coords = get_textcontent(gmlcoords[0]).split(",");
+					var pt = new google.maps.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
+					
+					var msdatetime = this.getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
+					var datetime = get_textcontent(msdatetime[0]);
+					var d = $.datepicker.parseDate('yymmdd', datetime.substring(0, 8));
+					d.setHours(parseInt(datetime.substring(9, 11)));
+					
+					var mstime;
+					if (cfg.timezone != 'utc')
+						mstime = this.getElementsByTagName(badxml ? "TIME" : "ms:TIME");
+					else
+						mstime = this.getElementsByTagName(badxml ? "TIMEUTC" : "ms:TIMEUTC");
+					var time = get_textcontent(mstime[0]);
+					
+					//var iscurrent = current && (+d == +current);
+					var isCurrent = false;
+					markerList[count] = create_timestep_marker(map, pt, create_timestep_icon(map.getZoom(), isCurrent), json, d, time, isCurrent ? 10000001 : -1000000);
+					//map.overlays.push(marker);
+					count++;
 				});
+			}).done(function(){
+				$.each(markerList, function(){
+					this.setMap(map);
+				});
+			});
+			
+			//markerList[count].setMap(map);
 		}
-		//find first-load selected latest hurricane and label its name with .button-selected, 
+		function get_textcontent(node)
+		{
+		if (!node) return '';
+		return node.textContent || node.firstChild.nodeValue;
+		}
+		function create_timestep_icon(zoomlevel, current)
+		{
+		// figure out required icon size depending on zoomlevel
+		    //alert(zoomlevel);
+			var zoom; // = (zoomlevel % 2 == 1) ? zoomlevel - 1: zoomlevel - 2;
+			if (zoomlevel <= 6) {
+				zoom = '5';
+			}	
+			else if (zoomlevel == 7 || zoomlevel == 8) {
+				zoom = '6';
+			}
+			else if (zoomlevel == 9 || zoomlevel == 10) {
+				zoom = '8';
+			}
+			else if (zoomlevel >= 11) {
+				zoom = '10';
+			}
+		
+			//track timestep symbol
+			var image;
+			if (current)
+				image = "../CERAMobile/_marker/track" + zoom + "timestep_curr.png";
+			else
+				image = "../CERAMobile/_marker/track" + zoom + "timestep.png";
+			var trackIcon = new google.maps.MarkerImage(
+				image,
+				new google.maps.Size(17, 17),
+				new google.maps.Point(0, 0),
+				new google.maps.Point(9, 9));
+		
+			return { icon: trackIcon, imageMap: new Array(1, 1, 1, 17, 17, 17, 17, 1), infoWindowAnchor: new google.maps.Point(9, 9) };
+		}
+		
+		function create_timestep_marker(map, point, icon, data_array, date, time, zindexprocess) 
+		{
+			var opts = { 
+				icon: icon.icon,
+				title: time,
+				anchorPoint: icon.infoWindowAnchor,
+				shape: { 
+					coord: icon.imageMap, 
+					type: 'poly' 
+				},
+				position: point
+			};
+			if (zindexprocess) 
+				opts.zIndex = zindexprocess;
+			
+			var marker = new google.maps.Marker(opts);
+			/* 
+			google.maps.event.addListener(marker, "click", 
+				function() {
+					if (!map.maptoolsControl || !map.maptoolsControl.enabledTrackQuery()) 
+						select_timestep_layer(data_array, date);
+				});
+			*/
+			return marker;
+		}
 	</script>
     </head>
     <body onload="initMap()">
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
-  			<h5 id="source" style="text-align: center;">&nbsp;</h5>
+  			<!--<h5 id="source" style="text-align: center;">&nbsp;</h5>-->
+  			<div>&nbsp;</div>
   			<div class="dropdown-container" id="layers-container">
 		      <div class="button-selected" id='layer-button' onclick="toggleLayerButton()">
 		      	<span id="layerName" style="display: none">&nbsp;</span>
@@ -443,7 +481,7 @@
 	        <div id="map" style="height: 100%px; width: 100%px; margin-left: auto; margin-right: auto; position: relative">&nbsp;</div> 
 			<noscript><b>JavaScript must be enabled in order for you to use Google Maps.</b><br />However, it seems JavaScript is either disabled or not supported by your browser. To view Google Maps, enable JavaScript by changing your browser options, and then try again.</noscript>
 
-		    <h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>
+		    <!--<h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>-->
 		    <a href="http://cera.cct.lsu.edu" style="text-align: center; text-decoration: none;"><h3>Looking for the desktop site?</h3></a>
 	    </div>	
         <script>

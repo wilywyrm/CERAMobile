@@ -1,4 +1,5 @@
-.button-selected, .dropdown {
+.button-selected, .dropdown{
+	width: 100px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -6,14 +7,16 @@
     position: relative;
     font-family: Arial, sans-serif;
     font-size: 17px;
+    vertical-align: middle;
+    text-align: center;
     box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
     -moz-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 2px 4px;
     color: #000;
     border: 1px solid #717B87;
     background-color: #fff;
+    visibility: visible;
   }
-
   .button-selected {
     font-weight: bold;
 			margin: 5px;
