@@ -1,4 +1,5 @@
 .button-selected, .dropdown{
+	padding: 13px 30px 3px 5px;
 	width: 100px;
     cursor: pointer;
     -webkit-user-select: none;
@@ -25,7 +26,7 @@
   }
 
   .dropdown-container {
-    margin: 5px;
+    margin: 10px;
   }
 
   .dropdown-container .button-selected {
@@ -43,7 +44,7 @@
 
 
   .dropdown-item {
-    padding: 1px 5px 3px 5px;
+    padding: 13px 30px 3px 5px;
     text-align: left;
   }
 
