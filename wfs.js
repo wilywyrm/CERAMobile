@@ -1,6 +1,9 @@
-function createTrackPoints(wmsSpec,cfg)//reieve post $.param(wmsSpec) value
+function createTrackPoints()
 {
+	var wmsSpec = wmsSpecDataGenerator();
+	wmsSpec = $.param(wmsSpec);
 	zoomLevel = map.zoom;
+	cfg = getConfigData();
 	//remeber to add in django.data_host to the front before uploading it to the server. hardcoding was purely for testing purposes.
 	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
 	function(xmlDoc){
@@ -113,30 +116,14 @@ function createTimestepMarker(map, point, icon, data_array, date, time, zindexpr
 	return marker;
 }
 
-function createLegend(wmsSpec, cfg){//accept raw wmsSpec
-	layer_data = { 
-				"com": wmsSpec.com,
-				"layer": "",
-				"tz": cfg.timezone,
-				"data_host": cfg.data_host
-			};
-			
-	var params = "id=" + layer_data.com + "/tz=" +layer_data.tz + "/layer=" + "0";
-	if (layer_data.dev) 
-		params = params + "/dev=" + layer_data.dev;
-		
-	$.get(cfg.django_base+"/adcircrun/" + params + ".html", 
-		function(response) {
-			$('#legend').html(response);
-		});
-			
-}
-
-
 //function createTrackLine(map, cfg, wms_spec, newlevel)
-function createTrackLine(wmsSpec, cfg)//accept post $.param(wmsSpec) value
+function createTrackLine()
 {
-	zoomLevel = map.zoom;	
+	var wmsSpec = wmsSpecDataGenerator();
+	wmsSpec = $.param(wmsSpec);
+	zoomLevel = map.zoom;
+	cfg = getConfigData();
+	
 	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_lines&debug=on&data_host=" + cfg.data_host,
 		function(xmlDoc) {   //function to process the state change events that happen on that request
 			if(lineList.length != 0)

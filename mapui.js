@@ -6,11 +6,11 @@ window.addEventListener('orientationchange', doOnOrientationChange);
   function doOnOrientationChange(){
     if((window.orientation==-90)||(window.orientation==90))//portrait
     {  
-  		$("#map").css({width: '90%', height: window.innerWidth * .9 + ""});
+  		$("#map").css({width: '90%', height: window.screen.width * .7 + ""});
     }
     else//landscape
     {
-  		$("#map").css({width: '90%', height: window.innerHeight * .9 + ""});
+  		$("#map").css({width: '70%', height: window.screen.height * .7 + ""});
     }
   }
 
@@ -87,6 +87,8 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 
 	if(deferred != null) // if NOT a layer change refresh
 		deferred.done(function(){
+			createTrackLine();	
+			createTrackPoints();
 			if(layerIndex == null) // if first run
 			{
 				layerIndex = 0;

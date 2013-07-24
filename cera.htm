@@ -46,7 +46,7 @@
   			<!--<h5 id="source" style="text-align: center;">&nbsp;</h5>-->
   			<div>&nbsp;</div>
   			<div id="layers-container" class="dropdown-container" style="display:none">
-		      <div id="layer-button" class="button-selected" style="padding: 13px 30px 3px 5px;" onclick="toggleLayerButton()">
+		      <div id="layer-button" class="button-selected" onclick="toggleLayerButton()">
 		      	<span id="layerName">Layers</span>
 		      </div>
 		      <div class="dropdown-selected" id="layers">
@@ -54,25 +54,22 @@
 		      </div>
 		    </div>
 			<div id="hurricanes-container" class="dropdown-container"  style="display:none">
-		      <div id="hurricane-button" class="button-selected" style="padding: 13px 30px 3px 5px;"  onclick="toggleHurricaneButton()">
+		      <div id="hurricane-button" class="button-selected"  onclick="toggleHurricaneButton()">
 		      	<span id="hurricaneName">Hurricanes</span>
 			  </div>
 		      <div id="hurricanes" class="dropdown-selected">
 		        &nbsp;
 		      </div>
 		    </div>
-		    <div id="map border"  style="border: 2px solid; border-radius: 10px;">
-	        	<div id="map" style="height: 0%; width: 0%; margin-left: 10px; margin: 0px auto; 10px; position: center;">&nbsp;</div>
-	        	<div id="legend" style="height: 90%; width: 9% position: left">&nbsp;</div>
-	        </div> 
+	        <div id="map" style="height: 100%px; width: 100%px; margin-left: auto; margin-right: auto; position: relative">&nbsp;</div> 
 			<noscript><b>JavaScript must be enabled in order for you to use Google Maps.</b><br />However, it seems JavaScript is either disabled or not supported by your browser. To view Google Maps, enable JavaScript by changing your browser options, and then try again.</noscript>
 
 		    <!--<h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>-->
-		    <a href="http://cera.cct.lsu.edu" style="text-align: center; text-decoration: none; height; window.innerHeight - 90% * window.innerHeight"><h3>Looking for the desktop site?</h3></a>
+		    <a href="http://cera.cct.lsu.edu" style="text-align: center; text-decoration: none;"><h3>Looking for the desktop site?</h3></a>
 	    </div>	
         <script>
         	doOnOrientationChange();
         	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');	
         </script>
        </body>    
-</html>		
+</html>
