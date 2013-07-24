@@ -111,7 +111,7 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 				//$('#layer-button span').show();
 				//$('#layerName').hide();
 				
-				map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
+				//map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
 			}
 			else // if the layer name is in the same place
 			{
@@ -119,9 +119,9 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 				if($('#layerName').text() != "Layers") // if we hid the layer select menu
 					$('#layers div').hide(); // also hide new hurricane/json's new divs which are visible by default
 				$('#layers').find("div:eq(" + layerIndex + ")").addClass("button-selected");
-				map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
+				//map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
-			
+			map.overlayMapTypes.push(returnImageList(map, layerIndex));
 			//$('#hurricane-button span').hide();
 			//$('#hurricane-button span:last').show(); // display "Hurricane" on hurricane-button
 		});

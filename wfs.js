@@ -75,11 +75,11 @@ function createTimestepIcon(zoomlevel, current)
 	//track timestep symbol
 	var image;
 	if (current)
-		image = "http://cera.cct.lsu.edu/cera/_marker/track" + zoom + "timestep_curr.png";	// testing/dev at home code
-		//image = "../cera/_marker/track" + zoom + "timestep_curr.png";	// production code
+		//image = "http://cera.cct.lsu.edu/cera/_marker/track" + zoom + "timestep_curr.png";	// testing/dev at home code
+		image = "../cera/_marker/track" + zoom + "timestep_curr.png";	// production code
 	else
-		image = "http://cera.cct.lsu.edu/cera/_marker/track" + zoom + "timestep.png";	
-		//image = "../cera/_marker/track" + zoom + "timestep.png"; 
+		//image = "http://cera.cct.lsu.edu/cera/_marker/track" + zoom + "timestep.png";	
+		image = "../cera/_marker/track" + zoom + "timestep.png"; 
 	
 	var trackIcon = new google.maps.MarkerImage(
 		image,
