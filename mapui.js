@@ -17,17 +17,19 @@ window.addEventListener('orientationchange', doOnOrientationChange);
 function jumpLayer(layerIndex) {				
 	$('#layers div').removeClass("button-selected");
 	$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
-	$('#layerName').text(layerList[layerIndex]);
+	//$('#layerName').text(layerList[layerIndex]);
 	getMap(layerIndex, null);
 }
 
 function jumpHurricane(hurricaneIndex) {
-	$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
+	//$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
 	JSONURL = getLatestJSONURL(hurricaneIndex);
 	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
 	$('#hurricanes div').removeClass("button-selected");
 	$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");				
-	getMap($('#layers div.button-selected').index(), refresh());				
+	getMap($('#layers div.button-selected').index(), refresh());		
+	//$('#layers div').show();		
+	//$('#layerName').text("Layers");
 }
 	
 function initMap()
@@ -92,11 +94,10 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 				layerIndex = 0;
 				$('#layers div:eq(0)').addClass("button-selected");
 				$('#hurricanes div:eq(0)').addClass("button-selected");
-				$('#hurricaneName').text(hurricaneList[0].text);
-				$('#layerName').text(layerList[0]);
+				//$('#hurricaneName').text(hurricaneList[0].text);
+				//$('#layerName').text(layerList[0]);
 			}	  				
-			
-			if(layerList[layerIndex] != layerName) // if the old layer name is not in the same place
+			else if(layerList[layerIndex] != layerName) // if the old layer name is not in the same place
 			{
 				var newIndex = 0; //default to using first layer in layerList
 				if(layerList.indexOf(layerName) != -1) // if the layer we previously selected still exists in the array somewhere
@@ -104,44 +105,52 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 				
 				$('#layers div').removeClass("button-selected"); // clear old selected layer, if any
 				$('#layers').find("div:eq(" + newIndex + ")").addClass("button-selected"); // select new layer
-				$('#layers div').toggle(true);
-				
-				$('#layerName').text(layerList[newIndex]);
-				$('#layer-button span').show();
-				$('#layerName').hide();
+				$('#layers div').show();
+				//console.log("hi");
+				$('#layerName').text("Layers");
+				//$('#layer-button span').show();
+				//$('#layerName').hide();
 				
 				map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
 			}
 			else // if the layer name is in the same place
 			{
+				//console.log("hi");
+				if($('#layerName').text() != "Layers") // if we hid the layer select menu
+					$('#layers div').hide(); // also hide new hurricane/json's new divs which are visible by default
 				$('#layers').find("div:eq(" + layerIndex + ")").addClass("button-selected");
 				map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
 			}
 			
-			$('#hurricane-button span').hide();
-			$('#hurricane-button span:last').show(); // display "Hurricane" on hurricane-button
+			//$('#hurricane-button span').hide();
+			//$('#hurricane-button span:last').show(); // display "Hurricane" on hurricane-button
 		});
 	else // we're probably in a layer change refresh, no refresh of JSON needed
+	{
 		map.overlayMapTypes.push(returnImageList(map, layerIndex));
+		$('#layerName').text("Layers");
+	}
 }
 			
 function toggleLayerButton(){
 	$('#layers div').slideToggle(100, function(){
-		$('#layer-button span').hide();
+//		$('#layer-button span').hide();
 		if($('#layers div').is(':visible'))
-			$('#layer-button span:last').show();
-		else
-			$('#layerName').show();
+			$('#layerName').text("Layers");
+		else{
+			$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
+		}
 	});
-	$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
+	//console.log(layerList[$('#layers div.button-selected').index()]);
+	//$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
 }
 		
 function toggleHurricaneButton(){
 	$('#hurricanes div').slideToggle(100, function(){
-		$('#hurricane-button span').hide();
+//		$('#hurricane-button span').hide();
 	if($('#hurricanes div').is(':visible'))
-		$('#hurricane-button span:last').show();
+		$('#hurricaneName').text("Hurricanes");
 	else
-		$('#hurricaneName').show();
+		$('#hurricaneName').text(hurricaneList[$('#hurricanes div.button-selected').index()].text);
 	});
 }

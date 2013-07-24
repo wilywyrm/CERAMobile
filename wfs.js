@@ -5,11 +5,11 @@ function createTrackPoints()
 	zoomLevel = map.zoom;
 	cfg = getConfigData();
 	//remeber to add in django.data_host to the front before uploading it to the server. hardcoding was purely for testing purposes.
-	$.get("http://cera.cct.lsu.edu/cera_data" + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
+	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
 	function(xmlDoc){
 		if(markerList.length != 0)
 		{
-			$.each(markerList,function(){
+			$.each(markerList, function(){
 				this.setMap(null);
 			});
 		}
@@ -21,35 +21,29 @@ function createTrackPoints()
 			markers = xmlDoc.documentElement.getElementsByTagName("track_timesteps"); 
 		}
 			
-		var count=0;//count for the list of markers
-		$.each(markers, function() {
-			var gmlpoint = this.getElementsByTagName(badxml ? "Point" : "gml:Point");
+		for(var i = 0; i < markers.length; i++) {
+			var gmlpoint = markers[i].getElementsByTagName(badxml ? "Point" : "gml:Point");
 			var gmlcoords = gmlpoint[0].getElementsByTagName(badxml ? "coordinates" : "gml:coordinates");
 			var coords = getTextContent(gmlcoords[0]).split(",");
 			var pt = new google.maps.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
 			
-			var msdatetime = this.getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
+			var msdatetime = markers[i].getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
 			var datetime = getTextContent(msdatetime[0]);
 			var d = $.datepicker.parseDate('yymmdd', datetime.substring(0, 8));
 			d.setHours(parseInt(datetime.substring(9, 11)));
 			
 			var mstime;
 			if (cfg.timezone != 'utc')
-				mstime = this.getElementsByTagName(badxml ? "TIME" : "ms:TIME");
+				mstime = markers[i].getElementsByTagName(badxml ? "TIME" : "ms:TIME");
 			else
-				mstime = this.getElementsByTagName(badxml ? "TIMEUTC" : "ms:TIMEUTC");
+				mstime = markers[i].getElementsByTagName(badxml ? "TIMEUTC" : "ms:TIMEUTC");
 			var time = getTextContent(mstime[0]);
 			
 			//var iscurrent = current && (+d == +current);
 			var isCurrent = false;
-			markerList[count] = createTimestepMarker(map, pt, createTimestepIcon(map.getZoom(), isCurrent), json, d, time, isCurrent ? 10000001 : -1000000);
-			//map.overlays.push(marker);
-			count++;
-		});
-	}).done(function(){
-		$.each(markerList, function(){
-			this.setMap(map);
-		});
+			markerList.push(createTimestepMarker(map, pt, createTimestepIcon(map.getZoom(), isCurrent), json, d, time, isCurrent ? 10000001 : -1000000));
+			markerList[i].setMap(map);
+		}
 	});
 	
 	//markerList[count].setMap(map);
@@ -132,7 +126,13 @@ function createTrackLine()
 	
 	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_lines&debug=on&data_host=" + cfg.data_host,
 		function(xmlDoc) {   //function to process the state change events that happen on that request
-			var lines = xmlDoc.documentElement.getElementsByTagName("ms:track_lines"); 
+			if(lineList.length != 0)
+			{
+				$.each(lineList, function(){
+					this.setMap(null);
+				});
+			}
+			lines = xmlDoc.documentElement.getElementsByTagName("ms:track_lines"); 
 			var badxml = false;
 			if (0 == lines.length) {
 				badxml = true;
@@ -156,6 +156,7 @@ function createTrackLine()
 					map: map
 				});
 				poly.setMap(map);
+				lineList.push(poly);
 			}
 		});
 }

@@ -12,6 +12,7 @@
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 		<script>
 			var markerList = [];
+			var lineList = [];
 		  	var json; //json file
 			var map;
 			var layerList = [];
@@ -44,21 +45,19 @@
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
   			<!--<h5 id="source" style="text-align: center;">&nbsp;</h5>-->
   			<div>&nbsp;</div>
-  			<div class="dropdown-container" id="layers-container" style="display:none">
-		      <div class="button-selected" id='layer-button' onclick="toggleLayerButton()">
-		      	<span id="layerName" style="display: none">&nbsp;</span>
-		      	<span>Layers</span>
+  			<div id="layers-container" class="dropdown-container" style="display:none">
+		      <div id="layer-button" class="button-selected" onclick="toggleLayerButton()">
+		      	<span id="layerName">Layers</span>
 		      </div>
 		      <div class="dropdown-selected" id="layers">
 		        &nbsp;
 		      </div>
 		    </div>
-			<div class="dropdown-container" id="hurricanes-container" style="display:none">
-		      <div class="button-selected" id='hurricane-button' onclick="toggleHurricaneButton()">
-				<span id="hurricaneName" style="display: none">&nbsp;</span>
-		      	<span>Hurricanes</span>
+			<div id="hurricanes-container" class="dropdown-container"  style="display:none">
+		      <div id="hurricane-button" class="button-selected"  onclick="toggleHurricaneButton()">
+		      	<span id="hurricaneName">Hurricanes</span>
 			  </div>
-		      <div class="dropdown-selected" id="hurricanes">
+		      <div id="hurricanes" class="dropdown-selected">
 		        &nbsp;
 		      </div>
 		    </div>
