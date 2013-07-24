@@ -60,7 +60,13 @@ function getLatestJSONURL(index){
 
 function returnImageList(map, layerIndex)
 {
-	wms_url = wmsUrlGenerator();
+	var cfg = getConfigData();
+	var wmsSpec = wmsSpecDataGenerator(cfg);
+	createLegend(wmsSpec,cfg);//accepts raw wmsSpec data
+	wmsSpec = $.param(wmsSpec);
+	createTrackLine(wmsSpec,cfg);	
+	createTrackPoints(wmsSpec,cfg);
+	var wms_url = wmsUrlGenerator(wmsSpec);
 	var overlay = new google.maps.ImageMapType(
 	{
 		getTileUrl: function(tile, zoom) {
@@ -108,17 +114,14 @@ function returnImageList(map, layerIndex)
 	return overlay;
 }
 
-function wmsUrlGenerator()
+function wmsUrlGenerator(wmsSpec)//receive post $.param(wmsSpec) value
 {
-	var wms_spec_data= wmsSpecDataGenerator();
-	var wms_spec = $.param(wms_spec_data);
-	wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wms_spec;
+	wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?" + wmsSpec;
 	return wms_url;
 }
 
-function wmsSpecDataGenerator()
+function wmsSpecDataGenerator(cfg)
 {
-	var cfg = getConfigData(); 
 	var time = selectIndex(json.times); 
 	var com = selectIndex(json.comments_day);
 	var storm_year = selectIndex(json.years);
