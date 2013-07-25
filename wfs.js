@@ -80,9 +80,16 @@ function createTimestepIcon(zoomlevel, current)
 	
 	var trackIcon = new google.maps.MarkerImage(
 		image,
+		/*{
+			icon: {
+				path: google.maps.SymbolPath.CIRCLE,
+				scale: 10
+			}
+		}*/
 		new google.maps.Size(17, 17),
 		new google.maps.Point(0, 0),
-		new google.maps.Point(9, 9));
+		new google.maps.Point(9, 9)
+		);
 
 	return { icon: trackIcon, imageMap: new Array(1, 1, 1, 17, 17, 17, 17, 1), infoWindowAnchor: new google.maps.Point(9, 9) };
 }
@@ -90,7 +97,14 @@ function createTimestepIcon(zoomlevel, current)
 function createTimestepMarker(map, point, icon, data_array, date, time, zindexprocess) 
 {
 	var opts = { 
-		icon: icon.icon,
+		icon: /*icon.icon*/
+			{
+				path: google.maps.SymbolPath.CIRCLE,
+				scale: map.getZoom(), // this will be changed on every zoom change
+				strokeWeight: 0,
+				fillOpacity: 1,
+				fillColor: "black"  
+			},
 		title: time,
 		anchorPoint: icon.infoWindowAnchor,
 		shape: { 

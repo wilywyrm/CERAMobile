@@ -75,6 +75,19 @@ function initMap()
 		var hurricaneDropdown = document.getElementById('hurricanes-container');
 		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 		
+		google.maps.event.addListener(map, "zoom_changed", function() {
+    		$.each(markerList, function(){
+    			this.setIcon(
+    			{
+					path: google.maps.SymbolPath.CIRCLE,
+					scale: map.getZoom(), // this will be changed on every zoom change
+					strokeWeight: 0,
+					fillOpacity: 1,
+					fillColor: "black"  
+				});
+    		});
+        // Perform actions previously done on zoomend
+		});		
 		getMap(null, firstRefresh);
 	}
 }
