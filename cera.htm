@@ -11,14 +11,15 @@
 		<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 		<script>
-			var markerList = [];
-			var lineList = [];
-		  	var json; //json file
+			var json;
 			var map;
 			var layerList = [];
 		   	var hurricaneList = [];
 			var JSONURL; 
 			var wms_url = "cera.cct.lsu.edu/cera_data/ceracgi/cera_wms_tiled?day=20120826&time=0000&com=490&griddomain=CPRA&tz=cdt&"
+			var markerList = [];
+			var infoWindow = new google.maps.InfoWindow();
+			var lineList = [];
 		</script>
 		<script src="mapui.js"></script>
 		<script src="wfs.js"></script>

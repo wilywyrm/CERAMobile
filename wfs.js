@@ -117,13 +117,15 @@ function createTimestepMarker(map, point, icon, data_array, date, time, zindexpr
 		opts.zIndex = zindexprocess;
 	
 	var marker = new google.maps.Marker(opts);
-	/* 
+	
 	google.maps.event.addListener(marker, "click", 
 		function() {
-			if (!map.maptoolsControl || !map.maptoolsControl.enabledTrackQuery()) 
-				select_timestep_layer(data_array, date);
+			infoWindow.setContent(time);
+			infoWindow.open(map, marker);
+			/*if (!map.maptoolsControl || !map.maptoolsControl.enabledTrackQuery()) 
+				select_timestep_layer(data_array, date);*/
 		});
-	*/
+	
 	return marker;
 }
 
