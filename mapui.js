@@ -87,7 +87,7 @@ function initMap()
 				});
     		});
     		
-    		$.each(trackMarkerList, function(){
+    		$.each(timestepMarkerList, function(){
     			this.setIcon(
     			{
 					path: google.maps.SymbolPath.CIRCLE,
