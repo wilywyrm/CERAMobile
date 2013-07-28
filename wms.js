@@ -65,7 +65,8 @@ function returnImageList(map, layerIndex)
 	createLegend(wmsSpec,cfg);//accepts raw wmsSpec data
 	wmsSpec = $.param(wmsSpec);
 	createTrackLine(wmsSpec,cfg);	
-	createTrackPoints(wmsSpec,cfg);
+	createTimestepPoints(wmsSpec,cfg);
+	createTrackPoints(wmsSpec, cfg);
 	var wms_url = wmsUrlGenerator(wmsSpec);
 	var overlay = new google.maps.ImageMapType(
 	{

@@ -76,7 +76,18 @@ function initMap()
 		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 		
 		google.maps.event.addListener(map, "zoom_changed", function() {
-    		$.each(markerList, function(){
+    		$.each(trackMarkerList, function(){
+    			this.setIcon(
+    			{
+					path: google.maps.SymbolPath.CIRCLE,
+					scale: map.getZoom() + 5, // this will be changed on every zoom change
+					strokeWeight: 0,
+					fillOpacity: 1,
+					fillColor: "red"  
+				});
+    		});
+    		
+    		$.each(trackMarkerList, function(){
     			this.setIcon(
     			{
 					path: google.maps.SymbolPath.CIRCLE,
@@ -86,7 +97,6 @@ function initMap()
 					fillColor: "black"  
 				});
     		});
-        // Perform actions previously done on zoomend
 		});		
 		getMap(null, firstRefresh);
 	}
