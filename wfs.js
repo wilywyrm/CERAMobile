@@ -108,7 +108,7 @@ function createTimestepIcon(zoomlevel, current)
 	return { icon: trackIcon, imageMap: new Array(1, 1, 1, 17, 17, 17, 17, 1), infoWindowAnchor: new google.maps.Point(9, 9) };
 }
 
-function createTimestepMarker(map, point, icon, data_array, date, time, zindexprocess) 
+function createTimestepMarker(map, point, icon, data_array, date, time, zindexprocess)//only create the marker 
 {
 	var opts = { 
 		icon: /*icon.icon*/
@@ -138,15 +138,15 @@ function createTimestepMarker(map, point, icon, data_array, date, time, zindexpr
 			infoWindow.open(map, marker);
 			/*if (!map.maptoolsControl || !map.maptoolsControl.enabledTrackQuery()) 
 				select_timestep_layer(data_array, date);*/
+			jumpTrackPoint(time);
 		});
-	
 	return marker;
 }
 
 function createTrackPoints(wmsSpec, cfg)
 {
 	// read map layer 'track_labels' via WFS (to create track points and labels)
-	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_labels&debug=on&data_host=" + cfg.data_host,
+	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_labels&debug=on&data_host=" + cfg.data_host, //getting xml
 		function(xmlDoc) {   //function to process the state change events that happen on that request
 			if(trackMarkerList.length != 0)
 			{
@@ -178,7 +178,7 @@ function createTrackPoints(wmsSpec, cfg)
 				var msdatetime = markers[i].getElementsByTagName(badxml ? "DATETIME" : "ms:DATETIME");
 				var datetime = getTextContent(msdatetime[0]);
 				var d = $.datepicker.parseDate('yymmdd', datetime.substring(0, 8));
-//				d.setHours(parseInt(datetime.substring(9, 11)) + 1);
+				//d.setHours(parseInt(datetime.substring(9, 11)) + 1);
 				d.setHours(parseInt(datetime.substring(9, 11)));
 				var category = getTextContent(mscategory[0]);
 				

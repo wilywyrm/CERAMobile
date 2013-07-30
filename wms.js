@@ -51,9 +51,9 @@ function refresh(){
   	  return tempDeferred;
 }
 		  	
-function getLatestJSONURL(index){
+function getLatestJSONURL(index,time){
 	if(hurricaneList.length != 0 && hurricaneList[index] != null)
-		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=" + hurricaneList[index].year + "/stormnr=" + hurricaneList[index].value + "/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json";
+		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=" + time + "/id=/yr=" + hurricaneList[index].year + "/stormnr=" + hurricaneList[index].value + "/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json";
 	else
 		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json"; //defaults to latest
 }
@@ -62,7 +62,7 @@ function returnImageList(map, layerIndex)
 {
 	var cfg = getConfigData();
 	var wmsSpec = wmsSpecDataGenerator(cfg);
-	createLegend(wmsSpec,cfg);//accepts raw wmsSpec data
+	//createLegend(wmsSpec,cfg);//accepts raw wmsSpec data
 	wmsSpec = $.param(wmsSpec);
 	createTrackLine(wmsSpec,cfg);	
 	createTimestepPoints(wmsSpec,cfg);

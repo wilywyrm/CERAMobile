@@ -23,13 +23,23 @@ function jumpLayer(layerIndex) {
 
 function jumpHurricane(hurricaneIndex) {
 	//$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
-	JSONURL = getLatestJSONURL(hurricaneIndex);
+	JSONURL = getLatestJSONURL(hurricaneIndex,null);
 	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
 	$('#hurricanes div').removeClass("button-selected");
 	$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");				
 	getMap($('#layers div.button-selected').index(), refresh());		
 	//$('#layers div').show();		
 	//$('#layerName').text("Layers");
+}
+
+function jumpTrackPoint(time)
+{
+	//var layerIndex = $('#layers div.button-selected').index();
+  	var hurricaneIndex = $('#hurricanes div.button-selected').index();
+  	JSONURL = getLatestJSONURL(hurricaneIndex,time);
+  	$.getJSON(JSONURL,function(){
+  		getMap($('#layers div.button-selected').index(), null);}
+  	);		
 }
 	
 function initMap()
