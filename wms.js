@@ -8,7 +8,7 @@ function refresh(){
   			var layerHTML = [];
 			var count = 0;
 			layerList = [];
-			
+			/*
 			$.each(json.layers, function(layer, value) {
 				if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
 				{
@@ -17,7 +17,20 @@ function refresh(){
 					count++;
 				}
 			});
-			$('#layers').html(layerHTML.join(''));
+			*/
+			
+			$.each(json.layers, function(layer, value) {
+				if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
+				{
+					layerHTML.push('<option value=' + count + '>' + layer + '</option>');
+					layerList.push(layer);
+					count++;
+				}
+			});
+			//setting deafult value. after setting the value refresh of the element is needed
+			$('#jqlayer-button').html(layerHTML.join(''));
+			$('#jqlayer-button')[0].selected = 0;
+			$('#jqlayer-button').selectmenu("refresh");
 			
 			var hurricaneHTML = [];
 			hurricaneList = [];
@@ -37,16 +50,19 @@ function refresh(){
 				$.each(this.data, function()
 				{
 					count--;
-					hurricaneHTML.unshift('<div class=\'dropdown-item\' onclick="jumpHurricane(' + count + ')">' + this.text + '</div>');
+					hurricaneHTML.unshift('<option value=' + count + ')>' + this.text + '</option>');
 				})
 			})
-			$('#hurricanes').html(hurricaneHTML.join(''));		
-			
+			$('#jqhurricane-button').html(hurricaneHTML.join(''));
+			$('#jqhurricane-button')[0].selected = 0;
+			$('#jqhurricane-button').selectmenu("refresh");		
+			/*
 			if(hurricaneIndex != -1)
 				$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");
 			
 			if(layerIndex != -1)
 				$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
+			*/
 	  		});
   	  return tempDeferred;
 }

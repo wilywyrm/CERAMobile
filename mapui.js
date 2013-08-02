@@ -14,22 +14,14 @@ window.addEventListener('orientationchange', doOnOrientationChange);
     }
   }
 
-function jumpLayer(layerIndex) {				
-	$('#layers div').removeClass("button-selected");
-	$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
-	//$('#layerName').text(layerList[layerIndex]);
-	getMap(layerIndex, null);
+function jumpLayer(index) {
+	getMap(index, null);
 }
 
-function jumpHurricane(hurricaneIndex) {
-	//$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
-	JSONURL = getLatestJSONURL(hurricaneIndex,selectIndex(json.dates),null);
-	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
-	$('#hurricanes div').removeClass("button-selected");
-	$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");				
-	getMap($('#layers div.button-selected').index(), refresh());		
-	//$('#layers div').show();		
-	//$('#layerName').text("Layers");
+function jumpHurricane(index) {
+	JSONURL = getLatestJSONURL(index,selectIndex(json.dates),null);
+	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');				
+	getMap($('#jqlayer-button').selectedIndex, refresh());		
 }
 
 function jumpTrackPoint()

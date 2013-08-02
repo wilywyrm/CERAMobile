@@ -33,21 +33,11 @@
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
   			<!--<h5 id="source" style="text-align: center;">&nbsp;</h5>-->
   			<div>&nbsp;</div>
-  			<div id="layers-container" class="dropdown-container" style="display:none">
-		      <div id="layer-button" class="button-selected" style="padding: 13px 30px 3px 5px;" onclick="toggleLayerButton()">
-		      	<span id="layerName">Layers</span>
-		      </div>
-		      <div class="dropdown-selected" id="layers">
-		        &nbsp;
-		      </div>
+  			<div id="layers-container" class="dropdown-container" style="display:none; width: 40%">
+		      <select id="jqlayer-button" onchange="jumpLayer(this.selectedIndex)">&nbsp;</select>
 		   </div>
-			<div id="hurricanes-container" class="dropdown-container"  style="display:none">
-		      <div id="hurricane-button" class="button-selected" style="padding: 13px 30px 3px 5px;"  onclick="toggleHurricaneButton()">
-		      	<span id="hurricaneName">Hurricanes</span>
-			  </div>
-		      <div id="hurricanes" class="dropdown-selected">
-		        &nbsp;
-		      </div>
+			<div id="hurricanes-container" class="dropdown-container"  style="display:none; width: 40%">
+		      <select id="jqhurricane-button" onchange="jumpHurricane(this.selectedIndex)">&nbsp;</select>
 		    </div>
 		    <div id="map border"  style="border: 2px solid; border-radius: 10px;">
 	        	<div id="map" style="height: 0%; width: 0%; margin-left: 10px; margin: 0px auto; 10px; position: center;">&nbsp;</div>
