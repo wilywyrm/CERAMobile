@@ -20,6 +20,7 @@ function getTimestepPointsFromXML(xmlnode)
 function createTimestepPoints(wmsSpec,cfg)//reieve post $.param(wmsSpec) value
 {
 	zoomLevel = map.zoom;
+	
 	$.get(cfg.django_base + "/ceracgi/cera_wfs?" + wmsSpec + "&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=track_timesteps&debug=on&data_host=" + cfg.data_host,
 	function(xmlDoc){
 		if(timestepMarkerList.length != 0)
@@ -138,7 +139,7 @@ function createTimestepMarker(map, point, icon, data_array, date, time, zindexpr
 			infoWindow.open(map, marker);
 			/*if (!map.maptoolsControl || !map.maptoolsControl.enabledTrackQuery()) 
 				select_timestep_layer(data_array, date);*/
-			jumpTrackPoint(time);
+			jumpTrackPoint();
 		});
 	return marker;
 }

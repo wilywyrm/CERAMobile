@@ -23,7 +23,7 @@ function jumpLayer(layerIndex) {
 
 function jumpHurricane(hurricaneIndex) {
 	//$('#hurricaneName').text(hurricaneList[hurricaneIndex].text);
-	JSONURL = getLatestJSONURL(hurricaneIndex,null);
+	JSONURL = getLatestJSONURL(hurricaneIndex,selectIndex(json.dates),null);
 	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');
 	$('#hurricanes div').removeClass("button-selected");
 	$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");				
@@ -32,11 +32,11 @@ function jumpHurricane(hurricaneIndex) {
 	//$('#layerName').text("Layers");
 }
 
-function jumpTrackPoint(time)
+function jumpTrackPoint()
 {
 	//var layerIndex = $('#layers div.button-selected').index();
   	var hurricaneIndex = $('#hurricanes div.button-selected').index();
-  	JSONURL = getLatestJSONURL(hurricaneIndex,time);
+  	JSONURL = getLatestJSONURL(hurricaneIndex,selectIndex(json.dates),selectIndex(json.times));
   	$.getJSON(JSONURL,function(){
   		getMap($('#layers div.button-selected').index(), null);}
   	);		

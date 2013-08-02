@@ -51,9 +51,9 @@ function refresh(){
   	  return tempDeferred;
 }
 		  	
-function getLatestJSONURL(index,time){
+function getLatestJSONURL(index,day,time){
 	if(hurricaneList.length != 0 && hurricaneList[index] != null)
-		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=" + time + "/id=/yr=" + hurricaneList[index].year + "/stormnr=" + hurricaneList[index].value + "/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json";
+		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=" + day + "/time=" + time + "/id=/yr=" + hurricaneList[index].year + "/stormnr=" + hurricaneList[index].value + "/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json";
 	else
 		return "http://cera.cct.lsu.edu/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng/dev=0.json"; //defaults to latest
 }
