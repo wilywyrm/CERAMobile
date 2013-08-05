@@ -25,6 +25,10 @@
     overflow: hidden;
   }
 
+.ui-btn-inner {
+	font-size: 2em;
+}
+
   .dropdown-container {
     margin: 10px;
   }
