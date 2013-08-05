@@ -19,12 +19,12 @@ function jumpLayer(index) {
 }
 
 function jumpHurricane(index) {
-	$('#jqlayer-button').html(layerHTML.join(''));
-	$('#jqlayer-button')[0].selected = layerIndex;
-	$('#jqlayer-button').selectmenu("refresh");
+	//$('#jqlayer-button').html(layerHTML.join(''));
+	$('#jqhurricane-button')[0].selected=index;
+	$('#jqhurricane-button').selectmenu("refresh");
 	JSONURL = getLatestJSONURL(index,selectIndex(json.dates),null);
-	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');				
-	getMap($('#jqlayer-button').selectedIndex, refresh());
+	console.log('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');				
+	getMap(index, refresh());
 }
 
 function jumpTrackPoint()

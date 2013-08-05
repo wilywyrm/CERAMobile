@@ -18,6 +18,8 @@ function refresh(){
 					count++;
 				}
 			});
+			$('#jqlayer-button').html(layerHTML.join(''));
+			$('#jqlayer-button').selectmenu("refresh");
 			//setting deafult value. after setting the value refresh of the element is needed
 						
 			var hurricaneHTML = [];
@@ -43,7 +45,7 @@ function refresh(){
 			})
 			$('#jqhurricane-button').html(hurricaneHTML.join(''));
 			//$('#jqhurricane-button')[0].selected = hurricaneIndex;
-			//$('#jqhurricane-button').selectmenu("refresh");		
+			$('#jqhurricane-button').selectmenu("refresh");		
 	  		});
   	  return tempDeferred;
 }
