@@ -19,21 +19,18 @@ function jumpLayer(index) {
 }
 
 function jumpHurricane(index) {
-	//$('#jqlayer-button').html(layerHTML.join(''));
-	$('#jqhurricane-button')[0].selected=index;
-	$('#jqhurricane-button').selectmenu("refresh");
 	JSONURL = getLatestJSONURL(index,selectIndex(json.dates),null);
 	console.log('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');				
-	getMap(index, refresh());
+	getMap(index, refresh(index));
 }
 
 function jumpTrackPoint()
 {
-	//var layerIndex = $('#layers div.button-selected').index();
-  	var hurricaneIndex = $('#hurricanes div.button-selected').index();
+	var layerIndex = $('#jqlayer-button')[0].selectedIndex;
+  	var hurricaneIndex = $('#jqhurricane-button')[0].selectedIndex;
   	JSONURL = getLatestJSONURL(hurricaneIndex,selectIndex(json.dates),selectIndex(json.times));
   	$.getJSON(JSONURL,function(){
-  		getMap($('#layers div.button-selected').index(), null);}
+  		getMap($(layerIndex, null));}
   	);		
 }
 	
@@ -109,52 +106,18 @@ function initMap()
 
 function getMap(layerIndex, deferred) // making deferred a paramter is messy organization-wise, but it enables first-load optimization
 {
-	var layerName = $('#layers').find("div:eq(" + layerIndex + ")").text(); //the name of our last selected layer, is "" during first run				
+	//var layerName = $('#jqlayer-button option:selected').text();
 	for (var i = 0; i < map.overlayMapTypes.length; i++)
 		map.overlayMapTypes.setAt(i, null); // clear map
 
 	if(deferred != null) // if NOT a layer change refresh
 		deferred.done(function(){
-			if(layerIndex == null) // if first run
-			{
-				layerIndex = 0;
-				$('#layers div:eq(0)').addClass("button-selected");
-				$('#hurricanes div:eq(0)').addClass("button-selected");
-				//$('#hurricaneName').text(hurricaneList[0].text);
-				//$('#layerName').text(layerList[0]);
-			}	  				
-			else if(layerList[layerIndex] != layerName) // if the old layer name is not in the same place
-			{
-				var newIndex = 0; //default to using first layer in layerList
-				if(layerList.indexOf(layerName) != -1) // if the layer we previously selected still exists in the array somewhere
-					newIndex = layerList.indexOf(layerName); // select the index of that layer, wherever it is
-				
-				$('#layers div').removeClass("button-selected"); // clear old selected layer, if any
-				$('#layers').find("div:eq(" + newIndex + ")").addClass("button-selected"); // select new layer
-				$('#layers div').show();
-				//console.log("hi");
-				$('#layerName').text("Layers");
-				//$('#layer-button span').show();
-				//$('#layerName').hide();
-				
-				//map.overlayMapTypes.push(returnImageList(map, newIndex)/*clear selected layer and default to first layer in array*/);
-			}
-			else // if the layer name is in the same place
-			{
-				//console.log("hi");
-				if($('#layerName').text() != "Layers") // if we hid the layer select menu
-					$('#layers div').hide(); // also hide new hurricane/json's new divs which are visible by default
-				$('#layers').find("div:eq(" + layerIndex + ")").addClass("button-selected");
-				//map.overlayMapTypes.push(returnImageList(map, layerIndex)/*call a function that returns list of image in an array*/);
-			}
+			layerIndex = $('#jqlayer-button')[0].selectedIndex;		
 			map.overlayMapTypes.push(returnImageList(map, layerIndex));
-			//$('#hurricane-button span').hide();
-			//$('#hurricane-button span:last').show(); // display "Hurricane" on hurricane-button
 		});
 	else // we're probably in a layer change refresh, no refresh of JSON needed
 	{
 		map.overlayMapTypes.push(returnImageList(map, layerIndex));
-		$('#layerName').text("Layers");
 	}
 }
 			

@@ -1,7 +1,6 @@
-function refresh(){
-  	var layerIndex = $('#jqlayer-button').selectedIndex;
-  	//var hurricaneIndex = $('#jqhurricane-button').selectedIndex;
-  	//console.log($('#jqhurricane-button').selectedIndex);
+function refresh(Hurricaneindex){
+    var layerName = $('#jqlayer-button option:selected').text();
+    var newLayerIndexOfPreviousLayer=0;
 	var tempDeferred = 
 		$.getJSON(JSONURL, function(data) {
 	  		json = data;
@@ -13,14 +12,18 @@ function refresh(){
 			$.each(json.layers, function(layer, value) {
 				if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
 				{
-					layerHTML.push('<option value=' + count + '>' + layer + '</option>');
+					layerHTML.push('<option value=' + layer + '>' + layer + '</option>');
 					layerList.push(layer);
-					count++;
+					if(layerName == layer){
+						newLayerIndexOfPreviousLayer=count;}
+					count++;			
 				}
+				
 			});
+			//set layer name based on the previous run
 			$('#jqlayer-button').html(layerHTML.join(''));
+			$('#jqlayer-button')[0].selectedIndex = newLayerIndexOfPreviousLayer;
 			$('#jqlayer-button').selectmenu("refresh");
-			//setting deafult value. after setting the value refresh of the element is needed
 						
 			var hurricaneHTML = [];
 			hurricaneList = [];
@@ -44,7 +47,7 @@ function refresh(){
 				})
 			})
 			$('#jqhurricane-button').html(hurricaneHTML.join(''));
-			//$('#jqhurricane-button')[0].selected = hurricaneIndex;
+			$('#jqhurricane-button')[0].selectedIndex = Hurricaneindex;
 			$('#jqhurricane-button').selectmenu("refresh");		
 	  		});
   	  return tempDeferred;
@@ -179,6 +182,5 @@ function getConfigData()
 		googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
 		data_host: json.data_host
 	};
-	//console.log("in getconfig");
 	return config_data;
 }	
