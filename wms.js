@@ -154,7 +154,27 @@ function getConfigData()
 		maptype: "ROADMAP",
 		sw: [ 21,-97 ],
 		ne: [ 37,-74 ],
-		zoom: "",		googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
+		zoom: "",	
+		anilayer: "",
+		django_base: "/cera_data",
+		//django_base: "http://cera.cct.lsu.edu/cera_data",
+		data_url: "/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng",
+		cgi_base: "/cgi-cera",
+		timezone: "cdt",
+		asgs: "ng",
+		selectmenu: 0,
+		mapextent: "gulf",
+		mapextent_data: [
+			{ value: "gulf", text: "Gulf / Atlantic" },
+			{ value: "ng", text: "Northern Gulf" },
+			{ value: "al", text: "Alabama" },
+			{ value: "la", text: "Louisiana" },
+			{ value: "ms", text: "Mississippi" },
+			{ value: "orleans", text: "New Orleans" },
+			{ value: "custom", text: "- Custom -", default_entry: true }
+		],
+		maptools: 0,	
+		googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
 		data_host: json.data_host
 	};
 	//console.log("in getconfig");
