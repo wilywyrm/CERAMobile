@@ -19,9 +19,12 @@ function jumpLayer(index) {
 }
 
 function jumpHurricane(index) {
+	$('#jqlayer-button').html(layerHTML.join(''));
+	$('#jqlayer-button')[0].selected = layerIndex;
+	$('#jqlayer-button').selectmenu("refresh");
 	JSONURL = getLatestJSONURL(index,selectIndex(json.dates),null);
 	$('#source').html('<p>Reading from <a href=' + JSONURL + ' style="text-decoration: none;">' + JSONURL + '</a></p>');				
-	getMap($('#jqlayer-button').selectedIndex, refresh());		
+	getMap($('#jqlayer-button').selectedIndex, refresh());
 }
 
 function jumpTrackPoint()
@@ -155,25 +158,3 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 	}
 }
 			
-function toggleLayerButton(){
-	$('#layers div').slideToggle(100, function(){
-//		$('#layer-button span').hide();
-		if($('#layers div').is(':visible'))
-			$('#layerName').text("Layers");
-		else{
-			$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
-		}
-	});
-	//console.log(layerList[$('#layers div.button-selected').index()]);
-	//$('#layerName').text(layerList[$('#layers div.button-selected').index()]);
-}
-		
-function toggleHurricaneButton(){
-	$('#hurricanes div').slideToggle(100, function(){
-//		$('#hurricane-button span').hide();
-	if($('#hurricanes div').is(':visible'))
-		$('#hurricaneName').text("Hurricanes");
-	else
-		$('#hurricaneName').text(hurricaneList[$('#hurricanes div.button-selected').index()].text);
-	});
-}

@@ -1,6 +1,7 @@
 function refresh(){
-  	var layerIndex = $('#layers div.button-selected').index();
-  	var hurricaneIndex = $('#hurricanes div.button-selected').index();
+  	var layerIndex = $('#jqlayer-button').selectedIndex;
+  	//var hurricaneIndex = $('#jqhurricane-button').selectedIndex;
+  	//console.log($('#jqhurricane-button').selectedIndex);
 	var tempDeferred = 
 		$.getJSON(JSONURL, function(data) {
 	  		json = data;
@@ -8,16 +9,6 @@ function refresh(){
   			var layerHTML = [];
 			var count = 0;
 			layerList = [];
-			/*
-			$.each(json.layers, function(layer, value) {
-				if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
-				{
-					layerHTML.push('<div class=\'dropdown-item\' onclick="jumpLayer(' + count + ')">' + layer + '</div>');
-					layerList.push(layer);
-					count++;
-				}
-			});
-			*/
 			
 			$.each(json.layers, function(layer, value) {
 				if(value && (layer.indexOf('max') != -1)) // if the layer option is true (available)
@@ -28,10 +19,7 @@ function refresh(){
 				}
 			});
 			//setting deafult value. after setting the value refresh of the element is needed
-			$('#jqlayer-button').html(layerHTML.join(''));
-			$('#jqlayer-button')[0].selected = 0;
-			$('#jqlayer-button').selectmenu("refresh");
-			
+						
 			var hurricaneHTML = [];
 			hurricaneList = [];
 			count = 0;
@@ -54,15 +42,8 @@ function refresh(){
 				})
 			})
 			$('#jqhurricane-button').html(hurricaneHTML.join(''));
-			$('#jqhurricane-button')[0].selected = 0;
-			$('#jqhurricane-button').selectmenu("refresh");		
-			/*
-			if(hurricaneIndex != -1)
-				$('#hurricanes').find('div:eq('+ hurricaneIndex + ')').addClass("button-selected");
-			
-			if(layerIndex != -1)
-				$('#layers').find('div:eq('+ layerIndex + ')').addClass("button-selected");
-			*/
+			//$('#jqhurricane-button')[0].selected = hurricaneIndex;
+			//$('#jqhurricane-button').selectmenu("refresh");		
 	  		});
   	  return tempDeferred;
 }
@@ -173,27 +154,7 @@ function getConfigData()
 		maptype: "ROADMAP",
 		sw: [ 21,-97 ],
 		ne: [ 37,-74 ],
-		zoom: "",
-		anilayer: "",
-		django_base: "/cera_data",
-		//django_base: "http://cera.cct.lsu.edu/cera_data",
-		data_url: "/cera_data/adcircrun/day=/time=/id=/yr=/stormnr=/adv=/tracknr=/tz=cdt/asgs=ng",
-		cgi_base: "/cgi-cera",
-		timezone: "cdt",
-		asgs: "ng",
-		selectmenu: 0,
-		mapextent: "gulf",
-		mapextent_data: [
-			{ value: "gulf", text: "Gulf / Atlantic" },
-			{ value: "ng", text: "Northern Gulf" },
-			{ value: "al", text: "Alabama" },
-			{ value: "la", text: "Louisiana" },
-			{ value: "ms", text: "Mississippi" },
-			{ value: "orleans", text: "New Orleans" },
-			{ value: "custom", text: "- Custom -", default_entry: true }
-		],
-		maptools: 0,
-		googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
+		zoom: "",		googlekey: "AIzaSyADfBA05E4I5N2GCpEQqMvQwOngVbaKuxQ",
 		data_host: json.data_host
 	};
 	//console.log("in getconfig");
