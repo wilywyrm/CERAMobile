@@ -30,26 +30,22 @@
 
 	</script>
     </head>
-    <body onload="initMap()">
+    <body onload="initMap(); buttonTheming();">
+    	<div id="img-container" style="display: block; background: #333333">
+    		<img id="banner" style="margin-left: 5px; float='left'; align='left'" src="http://cera.cct.lsu.edu/cera/_images/banner_cera.png">
+    	</div>
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
-  			<!--<h5 id="source" style="text-align: center;">&nbsp;</h5>-->
-  			<div>&nbsp;</div>
-  			<div>&nbsp;</div>
-			<div>&nbsp;</div>
   			<div id="layers-container" class="dropdown-container" style="display:none; width: 40%;">
 		      <select id="jqlayer-button" onchange="jumpLayer(this.selectedIndex)" data-native-menu="false" style="width: 40%">&nbsp;</select>
-		   </div>
+		   	</div>
 			<div id="hurricanes-container" class="dropdown-container"  style="display:none; width: 40%;">
 		      <select id="jqhurricane-button" onchange="jumpHurricane(this.selectedIndex)" data-native-menu="false" style="width: 40%">&nbsp;</select>
 		    </div>
-		    <div id="map border"  style="border: 2px solid; border-radius: 10px;">
-	        	<div id="map" style="height: 0%; width: 0%; margin-left: 10px; margin: 0px auto; 10px; position: center;">&nbsp;</div>
-	        	<div id="legend" style="height: 90%; width: 9% position: left">&nbsp;</div>
-	        </div> 
+	        <div id="map" style="height: 0%; width: 0%; margin-left: 10px; margin: 0px auto; 10px; position: center;">&nbsp;</div>
 			<noscript><b>JavaScript must be enabled in order for you to use Google Maps.</b><br />However, it seems JavaScript is either disabled or not supported by your browser. To view Google Maps, enable JavaScript by changing your browser options, and then try again.</noscript>
 
 		    <!--<h2 id="title" style="text-align: center;">CERA Mobile - Just what you need, when you need it</h2>-->
-		    <button onclick="window.location.href='http://cera.cct.lsu.edu'" style="text-align: center; text-decoration: none; height; window.innerHeight - 90% * window.innerHeight">Looking for the desktop site?</button>
+		    <button id="redirect-button" onclick="window.location.href='http://cera.cct.lsu.edu/cgi-cera-ng/cera-ng.cgi'" style="text-align: center; text-decoration: none; height; window.innerHeight - 90% * window.innerHeight; corners: false">Looking for the desktop site?</button>
 	    </div>	
         <script>
         	doOnOrientationChange();

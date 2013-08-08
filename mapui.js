@@ -6,11 +6,11 @@ window.addEventListener('orientationchange', doOnOrientationChange);
   function doOnOrientationChange(){
     if((window.orientation==-90)||(window.orientation==90))//portrait
     {  
-  		$("#map").css({width: '90%', height: window.innerWidth * .9 + ""});
+  		$("#map").css({width: '100%', height: window.innerWidth * .9 + ""});
     }
     else//landscape
     {
-  		$("#map").css({width: '90%', height: window.innerHeight * .9 + ""});
+  		$("#map").css({width: '100%', height: window.innerHeight * .9 + ""});
     }
   }
 
@@ -49,8 +49,7 @@ function initMap()
 	  			({position: point,map: map,title: "You"});
 	  		
 			map.setCenter(point);
-			map.panTo(point);
-			
+			map.panTo(point);	
 			//console.log(position.coords.latitude + ", " + position.coords.longitude);
 		}/*, 
 		function(error){	// on error
@@ -60,7 +59,7 @@ function initMap()
 		//{maximumAge:0, timeout:1000, enableHighAccuracy: true}*/ // for pinpointing
 	);
 	//makeMap(30.411761, -91.181841); // load this in the meantime
-
+	
 	function makeMap(lat, lon) {
 		var point = new google.maps.LatLng(lat, lon);
  		var mapOptions = {zoom: 8, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP, mapTypeControl: false};
@@ -76,6 +75,8 @@ function initMap()
 		$("#hurricanes-container").show();
 		var hurricaneDropdown = document.getElementById('hurricanes-container');
 		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
+		
+		$('#redirect-button').buttonMarkup({theme: 'a'});
 		
 		google.maps.event.addListener(map, "zoom_changed", function() {
     		$.each(trackMarkerList, function(){
@@ -120,4 +121,3 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 		map.overlayMapTypes.push(returnImageList(map, layerIndex));
 	}
 }
-			
