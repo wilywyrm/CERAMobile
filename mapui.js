@@ -6,11 +6,11 @@ window.addEventListener('orientationchange', doOnOrientationChange);
   function doOnOrientationChange(){
     if((window.orientation==-90)||(window.orientation==90))//portrait
     {  
-  		$("#map").css({width: '100%', height: window.innerWidth * .9 + ""});
+  		$("#map").css({width: '100%', height: window.innerWidth * .85 + ""});
     }
     else//landscape
     {
-  		$("#map").css({width: '100%', height: window.innerHeight * .9 + ""});
+  		$("#map").css({width: '100%', height: window.innerHeight * .85 + ""});
     }
   }
 
@@ -76,7 +76,7 @@ function initMap()
 		var hurricaneDropdown = document.getElementById('hurricanes-container');
 		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 		
-		$('#redirect-button').buttonMarkup({theme: 'a'});
+		$('#redirect-button').buttonMarkup({corners: false});
 		
 		google.maps.event.addListener(map, "zoom_changed", function() {
     		$.each(trackMarkerList, function(){
