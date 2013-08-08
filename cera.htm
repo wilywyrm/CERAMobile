@@ -26,14 +26,17 @@
 		<script src="wfs.js"></script>
 		<script src="wms.js"></script>
 		<script>
-
 	</script>
     </head>
-    <body onload="initMap(); buttonTheming();">
-    	<div id="img-container" style="display: block; background: #333333">
-    		<img id="banner" style="margin-left: 5px; float='left'; align='left'" src="http://cera.cct.lsu.edu/cera/_images/banner_cera.png">
-    		<img id="banner-right" align='right' src="http://cera.cct.lsu.edu/cera/_images/banner_ng.png">
+    <body onload="initMap();">
+    	<div style="display: block; background-color: #333333; color: #fff; overflow: hidden">
+    		<div id="text1" style="float: left; display: block;">Coastal Emergency Risks Assessment <br />
+    			ADCIRC Coastal Circulation and Storm Surge Model + SWAN Model</div>
+    		<div id="text4" style="float: right; display: block;">A storm surge and wave forecast system for the <br />
+    			<span style="float: right; display: block;">Northern Gulf Coast</span></div>
     	</div>
+    	<br />
+    	<br />
     	<div id="container" style="display: block; margin-left: auto; margin-right: auto;">
   			<div id="layers-container" class="dropdown-container" style="display:none; width: 40%;">
 		      <select id="jqlayer-button" data-theme="a" onchange="jumpLayer(this.selectedIndex)" data-native-menu="false" style="width: 40%">&nbsp;</select>
