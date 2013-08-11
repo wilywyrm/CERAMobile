@@ -4,13 +4,13 @@
 
 window.addEventListener('orientationchange', doOnOrientationChange);
   function doOnOrientationChange(){
-    if((window.orientation==-90)||(window.orientation==90))//portrait
+    if((window.orientation==-90)||(window.orientation==90))//landscape
     {  
-  		$("#map").css({width: '100%', height: window.innerHeight * .85 + ""});
+  		$("#map").css({width: '100%', height: window.innerWidth * .40 + ""});
     }
-    else//landscape
+    else//portrait
     {
-  		$("#map").css({width: '97%', height: window.innerHeight * .85 + ""});
+  		$("#map").css({width: '100%', height: window.innerHeight * .85 + ""});
     }
   }
 
