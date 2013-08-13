@@ -115,6 +115,12 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 		deferred.done(function(){
 			layerIndex = $('#jqlayer-button')[0].selectedIndex;		
 			map.overlayMapTypes.push(returnImageList(map, layerIndex));
+		})
+		.fail(function( jqxhr, textStatus, error ) {
+			$('#overlay').fadeIn('fast',function(){
+            $('#box').animate({'top':'160px'},500);
+        	});
+			console.log("Please contact Carola Kaiser at ckaiser@cct.lsu.edu. Tell her about error code " + textStatus + ", " + error);
 		});
 	else // we're probably in a layer change refresh, no refresh of JSON needed
 	{

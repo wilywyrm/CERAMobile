@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
 		<link rel="stylesheet" href="controls.css" />
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
 		<script>
@@ -30,6 +30,17 @@
 	</script>
     </head>
     <body onload="initMap();">
+    	<div class="overlay" id="overlay" style="display:none;"></div>
+			<div class="box" id="box">
+		 		<a class="boxclose" id="boxclose"></a>
+		 		<h1>Error :\</h1>
+			 		<p>
+					  Seems like you have encountered an error, please contact one of the following:</br></br>
+					  <li>Carola Kaiser at ckaiser@cct.lsu.edu</li></br> 
+					  <li>Howard Wang at xwang88@tigers.lsu.edu</li></br>
+					  <li>Rufei Zhou at rzhou8@illinois.edu</li></br> 
+			 		</>
+			</div>
     	<div id="img-container" style="display: block; background: #333333; overflow-x: hidden;">
     		<img id="banner" style="margin-left: 5px; float='left'" src="http://cera.cct.lsu.edu/cera/_images/banner_cera.png">
     		<img id="banner-right" align='right' src="http://cera.cct.lsu.edu/cera/_images/banner_ng.png">
