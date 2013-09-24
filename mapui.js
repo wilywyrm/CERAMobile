@@ -70,11 +70,11 @@ function initMap()
 	  	//from here on is the custom control
 	  	$("#layers-container").show();
 		var layerDropdown = document.getElementById('layers-container');
-		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
+		//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
 		
 		$("#hurricanes-container").show();
 		var hurricaneDropdown = document.getElementById('hurricanes-container');
-		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
+		//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 		
 		$('#redirect-button').buttonMarkup({corners: false});
 		

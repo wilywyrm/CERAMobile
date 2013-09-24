@@ -20,17 +20,16 @@
   }
   .button-selected {
     font-weight: bold;
-			margin: 5px;
+	margin: 5px;
     padding: 1px 6px;
     overflow: hidden;
   }
-
 .ui-btn-inner {
 	font-size: 2em;
 }
 
   .dropdown-container {
-    margin: 10px;
+    margin: 0px;
   }
 
   .dropdown-container .button-selected {
@@ -45,8 +44,6 @@
     z-index: -1;
     position: relative;
   }
-
-
   .dropdown-item {
     padding: 13px 30px 3px 5px;
     text-align: left;
@@ -55,6 +52,7 @@
   .dropdown-item:hover {
     background: #ebebeb;
   }
+  
 .overlay{
     background:transparent images/overlay.png repeat top left;
     position:fixed;
