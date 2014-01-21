@@ -62,19 +62,19 @@ function initMap()
 	
 	function makeMap(lat, lon) {
 		var point = new google.maps.LatLng(lat, lon);
- 		var mapOptions = {zoom: 8, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP, mapTypeControl: false};
+ 		var mapOptions = {zoom: 10, center: point, mapTypeId: google.maps.MapTypeId.ROADMAP, mapTypeControl: false};
   		map = new google.maps.Map(document.getElementById('map'),mapOptions);
   		marker = new google.maps.Marker
 	  			({position: point,map: map,title: "You"});
 	  	
 	  	//from here on is the custom control
 	  	$("#layers-container").show();
-		var layerDropdown = document.getElementById('layers-container');
-		//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
+		var layerDropdown = document.getElementById('layers-contaier-top');
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layerDropdown);
 		
 		$("#hurricanes-container").show();
-		var hurricaneDropdown = document.getElementById('hurricanes-container');
-		//map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
+		var hurricaneDropdown = document.getElementById('hurricanes-container-top');
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(hurricaneDropdown);
 		
 		$('#redirect-button').buttonMarkup({corners: false});
 		
@@ -116,7 +116,7 @@ function getMap(layerIndex, deferred) // making deferred a paramter is messy org
 			layerIndex = $('#jqlayer-button')[0].selectedIndex;		
 			map.overlayMapTypes.push(returnImageList(map, layerIndex));
 		})
-		.fail(function( jqxhr, textStatus, error ) {
+		.fail(function() {
 			$('#overlay').fadeIn('fast',function(){
             $('#box').animate({'top':'160px'},500);
         	});

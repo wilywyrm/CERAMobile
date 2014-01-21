@@ -20,6 +20,7 @@
   }
   .button-selected {
     font-weight: bold;
+    font-size: 50%;
 	margin: 5px;
     padding: 1px 6px;
     overflow: hidden;
@@ -27,13 +28,15 @@
 .ui-btn-inner {
 	font-size: 2em;
 }
-
   .dropdown-container {
     margin: 0px;
   }
+  .ui-btn{
+  	height: 100%;
+  }
 
   .dropdown-container .button-selected {
-    margin: 0;
+    margin: 500px;
   }
 
   .dropdown-selected {
